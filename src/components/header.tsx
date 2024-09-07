@@ -37,7 +37,7 @@ export default function Header() {
                     <SheetDescription className="mt-6">
                         <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
                             <House color="#0c0a09" weight="regular" size={18} />
-                            Home
+                            Homee
                         </Button>
                     </SheetDescription>
                 </SheetContent>
