@@ -2,8 +2,10 @@ import { House, List, X } from "@phosphor-icons/react";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+    const navigate = useNavigate()
     return(
         <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row gap-2">
@@ -35,7 +37,7 @@ export default function Header() {
                         </SheetTitle>
                     </SheetHeader>
                     <SheetDescription className="mt-6">
-                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
+                        <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
                             <House color="#0c0a09" weight="regular" size={18} />
                             Home
                         </Button>
