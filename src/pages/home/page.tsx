@@ -1,13 +1,13 @@
+import { Link } from "react-router-dom";
+
 import Header from "@/components/header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Receipt } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
 
 export default function Home() {
-
     return (
         <div className="flex flex-col p-4 gap-2">
             <Header />
