@@ -16,7 +16,7 @@ export default function createReceitp(){
             />
             <HeaderWithBack path={"/"} title={'Criar recibo'}/>
             <div className="flex flex-col p-4 gap-4">
-                <p className="font-normal text-base">Para criar o recibo, preencha o formulário abaixo.</p>
+                <p className="font-normal text-base">Para criar o recibo compartilhado, insira as informações abaixo.</p>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="title">Título</Label>
                     <Input type="text"/>

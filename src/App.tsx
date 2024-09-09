@@ -5,6 +5,7 @@ import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
 import AddCost from './pages/receipts/addCost/page'
 import ResumeReceipt from './pages/receipts/resumeReceipt/page'
+import SearchReceipt from './pages/receipts/searchReceipts/page'
 import Error from './pages/error/page'
 
 import './App.css'
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   {
     path: '/resumeReceipt',
     element: <ResumeReceipt />,
+    errorElement: <Error />
+  },
+  {
+    path: '/searchReceipts/:name',
+    element: <SearchReceipt />,
     errorElement: <Error />
   }
 ])

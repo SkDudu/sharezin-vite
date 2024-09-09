@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Header from "@/components/header";
 import { Badge } from "@/components/ui/badge";
@@ -7,12 +7,28 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Receipt } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+
+interface paramsSearch {
+    name: string
+}
 
 export default function Home() {
+    const navigate = useNavigate()
+    const [search, setSearch] = useState('')
+
+    function handleSearch() {
+        setSearch(search);
+    }
+
+    function goSearch(){
+        navigate(`/searchReceipt/${search}`);
+    }
+
     return (
         <div className="flex flex-col p-4 gap-2">
             <Header />
-            <Input placeholder="Pesquise pelo código do recibo."/>
+            <Input placeholder="Pesquise pelo código do recibo." onChange={handleSearch} onSubmit={goSearch}/>
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>

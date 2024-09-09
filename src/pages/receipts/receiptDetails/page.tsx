@@ -57,7 +57,31 @@ export default function ReceiptDetails(){
                                         <DialogTrigger>
                                             <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
                                                 <X color="#ef4444" weight="regular" size={18} />
-                                                Encerrar o recibo compartilhado
+                                                Encerrar seu recibo compartilhado
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="w-[70%] rounded">
+                                            <DialogHeader>
+                                            <DialogTitle className="flex justify-start">Encerrar seu recibo?</DialogTitle>
+                                            <DialogDescription className="text-start">
+                                                Você deseja encerrar sua participação nesse recibo? Você não poderá retornar a ele.
+                                            </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="flex flex-row gap-2 w-full justify-between">
+                                                <DialogClose className="w-full">
+                                                    <Button variant={"secondary"} className="w-full">Não</Button>
+                                                </DialogClose>
+                                                <Link to={'/'} className="w-full">
+                                                    <Button variant={"default"} onClick={exitReceipt} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
+                                                </Link>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                            <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
+                                                <X color="#ef4444" weight="regular" size={18} />
+                                                Encerrar recibo compartilhado
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent className="w-[70%] rounded">
