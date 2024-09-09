@@ -12,14 +12,14 @@ export default function Home() {
     return (
         <div className="flex flex-col p-4 gap-2">
             <Header />
-            <Input placeholder="Pesquise o recibo compartilhado com você."/>
+            <Input placeholder="Pesquise pelo código do recibo."/>
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>
                     <TabsTrigger value="convidado" className="w-full">Convidado</TabsTrigger>
                 </TabsList>
                 <TabsContent value="meusRecibos">
-                    <Link to={'/receiptDetails'}>
+                    <Link to={'/receiptDetails/1'}>
                         <Card className="mt-2">
                             <CardHeader className="flex flex-row p-2 justify-between">
                                 <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
@@ -60,7 +60,7 @@ export default function Home() {
                 </TabsContent>
             </Tabs>
             <Link to='/createReceipt'>
-                <Button className="absolute bg-blue-950 top-[90%] left-[85%] rounded-full w-15 h-15 p-3">
+                <Button className="absolute bg-blue-950 top-[85%] left-[80%] rounded-full w-15 h-15 p-3">
                     <Plus size={32}/>
                 </Button>
             </Link>

@@ -4,13 +4,14 @@ import Home from './pages/home/page'
 import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
 import AddCost from './pages/receipts/addCost/page'
+import ResumeReceipt from './pages/receipts/resumeReceipt/page'
 import Error from './pages/error/page'
 
 import './App.css'
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/:action?",
     element: <Home />,
     errorElement: <Error />
   },
@@ -20,13 +21,18 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/receiptDetails',
+    path: '/receiptDetails/:receiptID/:action?',
     element: <ReceitpDetails />,
     errorElement: <Error />
   },
   {
     path: '/addcost',
     element: <AddCost />,
+    errorElement: <Error />
+  },
+  {
+    path: '/resumeReceipt',
+    element: <ResumeReceipt />,
     errorElement: <Error />
   }
 ])

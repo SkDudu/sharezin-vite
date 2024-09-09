@@ -1,13 +1,25 @@
+import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+
 import HeaderWithBack from "@/components/headerWithBack";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
-import { useNavigate } from "react-router-dom";
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
+
+    function exitReceipt(){
+        toast.success('Conta encerrada com sucesso.')
+    }
+
     return(
         <>
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
+            />
             <HeaderWithBack path={'/'} title={'Detalhes do recibo'} />
             <div className="flex flex-col pt-4 pl-4 pr-4 gap-4">
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
@@ -35,14 +47,36 @@ export default function ReceiptDetails(){
                                         <ShareNetwork color="#0c0a09" weight="regular" size={18} />
                                         Compartilhar recibo
                                     </Button>
-                                    <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <Receipt color="#0c0a09" weight="regular" size={18} />
-                                        Resumo da seu recibo
-                                    </Button>
-                                    <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
-                                        <X color="#ef4444" weight="regular" size={18} />
-                                        Encerrar o recibo compartilhado
-                                    </Button>
+                                    <Link to={'/resumeReceipt'}>
+                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <Receipt color="#0c0a09" weight="regular" size={18} />
+                                            Resumo da seu recibo
+                                        </Button>
+                                    </Link>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                            <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
+                                                <X color="#ef4444" weight="regular" size={18} />
+                                                Encerrar o recibo compartilhado
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="w-[70%] rounded">
+                                            <DialogHeader>
+                                            <DialogTitle className="flex justify-start">Encerrar seu recibo?</DialogTitle>
+                                            <DialogDescription className="text-start">
+                                                Você deseja encerrar sua participação nesse recibo? Você não poderá retornar a ele.
+                                            </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="flex flex-row gap-2 w-full justify-between">
+                                                <DialogClose className="w-full">
+                                                    <Button variant={"secondary"} className="w-full">Não</Button>
+                                                </DialogClose>
+                                                <Link to={'/'} className="w-full">
+                                                    <Button variant={"default"} onClick={exitReceipt} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
+                                                </Link>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                             </SheetContent>
                         </Sheet>

@@ -1,13 +1,20 @@
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import HeaderWithBack from "@/components/headerWithBack";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
 
 export default function AddCostToReceipt(){
+    function addCost(){
+        toast.success('Valor adicionado com sucesso.')
+    }
+
     return(
         <div className="flex flex-col h-screen">
-            <HeaderWithBack path={'/receiptDetails'} title={'Adicionar custo'}/>
+
+            <HeaderWithBack path={'/receiptDetails/1'} title={'Adicionar custo'}/>
             <div className="flex flex-col p-4 h-full justify-between">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
@@ -29,10 +36,10 @@ export default function AddCostToReceipt(){
                 </div>
 
                 <div className="flex flex-col gap-3 pb-2">
-                    <Link to={''}>
-                        <Button variant={"default"} className="w-full">Adicionar custo</Button>
+                    <Link to={'/receiptDetails/1'}>
+                        <Button variant={"default"} onClick={addCost} className="w-full">Adicionar custo</Button>
                     </Link>
-                    <Link to={'/receiptDetails'}>
+                    <Link to={'/receiptDetails/1'}>
                         <Button variant={"secondary"} className="w-full">Cancelar</Button>
                     </Link>
                 </div>

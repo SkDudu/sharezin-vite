@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function createReceitp(){
-    const navigate = useNavigate()
     return(
         <div className="gap-2">
             <Toaster
@@ -58,7 +57,6 @@ export default function createReceitp(){
                                     variant={"default"} 
                                     onClick={() => {
                                         toast.success('Recibo criado com sucesso!');
-                                        return navigate('/')
                                     }} 
                                     className="w-full"
                                 >
