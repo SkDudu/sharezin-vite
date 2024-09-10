@@ -9,10 +9,6 @@ import { Plus, Receipt } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
-interface paramsSearch {
-    name: string
-}
-
 export default function Home() {
     const navigate = useNavigate()
     const [search, setSearch] = useState('')
