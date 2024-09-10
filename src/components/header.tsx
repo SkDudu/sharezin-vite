@@ -16,7 +16,7 @@ export default function Header() {
                     </Avatar>
                 </div>
                 <div className="flex flex-col">
-                    <p className="text-sm font-thin text-stone-600">Bem vindo!</p>
+                    <p className="text-sm font-light text-stone-600">Bem vindo!</p>
                     <p className="text-base font-semibold text-stone-950">Eduardo Santos</p>
                 </div>
             </div>

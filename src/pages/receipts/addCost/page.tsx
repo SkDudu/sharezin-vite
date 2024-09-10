@@ -26,7 +26,7 @@ export default function AddCostToReceipt(){
 
                     <div className="flex flex-col gap-1">
                         <Label htmlFor="cover">Nome do prato ou bebida</Label>
-                        <Input type="text"/>
+                        <Input type="text" className=""/>
                     </div>
 
                     <div className="flex flex-col gap-1">
