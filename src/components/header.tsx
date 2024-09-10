@@ -1,8 +1,8 @@
-import { House, List, X } from "@phosphor-icons/react";
+import { House, List, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
     const navigate = useNavigate()
@@ -20,30 +20,36 @@ export default function Header() {
                     <p className="text-base font-semibold text-stone-950">Eduardo Santos</p>
                 </div>
             </div>
-            
-            <Sheet>
-                <SheetTrigger>
-                    <List size={24} />
-                </SheetTrigger>
-                <SheetContent>
-                    <SheetHeader>
-                        <SheetTitle className="flex justify-start">
-                            <div className="flex flex-row w-full justify-between items-center">
-                                Menu
-                                <SheetClose>
-                                    <X size={24} />
-                                </SheetClose>
-                            </div>
-                        </SheetTitle>
-                    </SheetHeader>
-                    <SheetDescription className="mt-6">
-                        <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
-                            <House color="#0c0a09" weight="regular" size={18} />
-                            Home
-                        </Button>
-                    </SheetDescription>
-                </SheetContent>
-            </Sheet>
+
+            <div className="flex flex-row gap-4">
+                <Link to={'/searchReceipts'}>
+                    <MagnifyingGlass size={24} />
+                </Link>
+                
+                <Sheet>
+                    <SheetTrigger>
+                        <List size={24} />
+                    </SheetTrigger>
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle className="flex justify-start">
+                                <div className="flex flex-row w-full justify-between items-center">
+                                    Menu
+                                    <SheetClose>
+                                        <X size={24} />
+                                    </SheetClose>
+                                </div>
+                            </SheetTitle>
+                        </SheetHeader>
+                        <SheetDescription className="mt-6">
+                            <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
+                                <House color="#0c0a09" weight="regular" size={18} />
+                                Home
+                            </Button>
+                        </SheetDescription>
+                    </SheetContent>
+                </Sheet>
+            </div>
         </div>
     )
 }

@@ -39,14 +39,18 @@ export default function ReceiptDetails(){
                                     <SheetTitle>Opções</SheetTitle>
                                 </SheetHeader>
                                 <div className="flex flex-col mt-2 gap-2">
-                                    <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <PencilSimple color="#0c0a09" weight="regular" size={18} />
-                                        Editar informações do recibo
-                                    </Button>
-                                    <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <ShareNetwork color="#0c0a09" weight="regular" size={18} />
-                                        Compartilhar recibo
-                                    </Button>
+                                    <Link to={'/editReceipt/1'}>
+                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <PencilSimple color="#0c0a09" weight="regular" size={18} />
+                                            Editar informações do recibo
+                                        </Button>
+                                    </Link>
+                                    <Link to={'/shareReceipt/1'}>
+                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <ShareNetwork color="#0c0a09" weight="regular" size={18} />
+                                            Compartilhar recibo
+                                        </Button>
+                                    </Link>
                                     <Link to={'/resumeReceipt'}>
                                         <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
                                             <Receipt color="#0c0a09" weight="regular" size={18} />
