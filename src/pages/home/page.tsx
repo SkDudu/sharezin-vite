@@ -35,7 +35,7 @@ export default function Home() {
                     <TabsTrigger value="RecibosFechados" className="w-full">Recibos fechados</TabsTrigger>
                 </TabsList>
                 <TabsContent value="meusRecibos">
-                    {receipts.map((receipt: ReceiptProps) => (
+                    {receipts.map((receipt: ReceiptProps) => receipt.isClosed ? (
                         <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
                             <Card className="mt-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
@@ -46,7 +46,7 @@ export default function Home() {
                                 </CardHeader>
                                 <CardContent className="flex flex-col px-2 pb-2 gap-2">
                                     <p className="font-semibold">{receipt.title}</p>
-                                    <p>Descrição do recibo em grupo, pode ser festa, casamento, comemoração, despedida de solteiro... enfim</p>
+                                    <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.restaurant_name}</p>
                                     <div className="flex flex-row mt-2">
                                         <Badge variant={"default"} className="bg-blue-100">
@@ -59,7 +59,30 @@ export default function Home() {
                                 </CardContent>
                             </Card>
                         </Link>
-                    ))}
+                    ) : <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
+                            <Card className="mt-2">
+                                <CardHeader className="flex flex-row p-2 justify-between">
+                                    <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
+                                        <Receipt color="#3b82f6" weight="fill" size={32} />
+                                    </div>
+                                    <Badge variant={"default"} className="h-6 bg-green-500">Aberta</Badge>
+                                </CardHeader>
+                                <CardContent className="flex flex-col px-2 pb-2 gap-2">
+                                    <p className="font-semibold">{receipt.title}</p>
+                                    <p>{receipt.description}</p>
+                                    <p className="font-thin">Restaurante: {receipt.restaurant_name}</p>
+                                    <div className="flex flex-row mt-2">
+                                        <Badge variant={"default"} className="bg-blue-100">
+                                            <p className="text-blue-500">Convidado</p>
+                                        </Badge>
+                                        <Badge variant={"default"} className="bg-blue-500">
+                                            <p className="text-blue-100">Dono</p>
+                                        </Badge>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    )}
                 </TabsContent>
                 <TabsContent value="RecibosFechados">
                     <Card className="mt-2">

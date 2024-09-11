@@ -7,7 +7,8 @@ export interface ReceiptProps {
     restaurant_name: string,
     tax_cover: number,
     tax_service: number,
-    code_invitation: string
+    code_invitation: string,
+    isClosed: boolean
 }
 
 export async function getReceiptsAll() {
