@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import Header from "@/components/header";
@@ -8,9 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Receipt } from "@phosphor-icons/react";
 
 import { getReceiptsAll } from "@/routes/receipts";
-import { useEffect } from "react";
 
 export default function Home() {
+    //const [receipts, setReceipts] = useState()
 
     useEffect(()=>{
         getReceiptsAll()

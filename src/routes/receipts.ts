@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export async function getReceiptsAll(){
     try {
-        const receipts = await axios.get(`${process.env.API_URL}/receipts`);
+        const receipts = await axios.get(`${import.meta.env.VITE_API_URL}/receipts`);
         console.log(receipts);
     } catch (error) {
         console.error(error);
