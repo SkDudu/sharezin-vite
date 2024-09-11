@@ -7,7 +7,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Receipt } from "@phosphor-icons/react";
 
+import { getReceiptsAll } from "@/routes/receipts";
+import { useEffect } from "react";
+
 export default function Home() {
+
+    useEffect(()=>{
+        getReceiptsAll()
+    },[])
 
     return (
         <div className="flex flex-col p-4 gap-2">
