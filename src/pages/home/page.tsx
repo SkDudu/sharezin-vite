@@ -35,7 +35,7 @@ export default function Home() {
                     <TabsTrigger value="RecibosFechados" className="w-full">Recibos fechados</TabsTrigger>
                 </TabsList>
                 <TabsContent value="meusRecibos">
-                    {receipts.map((receipt: ReceiptProps) => receipt.isClosed ? (
+                    {receipts.map((receipt: ReceiptProps) => receipt.isClosed === true ? (
                         <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
                             <Card className="mt-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
@@ -65,7 +65,7 @@ export default function Home() {
                                     <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
                                         <Receipt color="#3b82f6" weight="fill" size={32} />
                                     </div>
-                                    <Badge variant={"default"} className="h-6 bg-green-500">Fechada</Badge>
+                                    <Badge variant={"default"} className="h-6 bg-stone-500">Fechada</Badge>
                                 </CardHeader>
                                 <CardContent className="flex flex-col px-2 pb-2 gap-2">
                                     <p className="font-semibold">{receipt.title}</p>
