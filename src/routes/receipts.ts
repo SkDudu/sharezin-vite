@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export interface ReceiptProps {
+    filter(arg0: (receipt: { isClose: boolean; }) => boolean): unknown;
     id: string,
     title: string,
     description?: string,
@@ -8,7 +9,8 @@ export interface ReceiptProps {
     tax_cover: number,
     tax_service: number,
     code_invitation: string,
-    isClosed: boolean
+    isClose: boolean,
+    userOwner: string
 }
 
 export async function getReceiptsAll() {

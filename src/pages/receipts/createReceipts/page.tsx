@@ -6,10 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 
 export default function createReceitp(){
+    const [cost, setCost] = useState('');
+    const [service, setService] = useState('');
+
     function actionCreateReceitp(){
         toast.success('Recibo criado com sucesso.')
+    }
+
+    function handlecoverChange(event: any) {
+        const { value } = event.target;
+        if (/^\d*\.?\d*$/.test(value)) {
+            setCost(value);
+        }
+    }
+
+    function handleserviceChange(event: any) {
+        const { value } = event.target;
+        if (/^\d*\.?\d*$/.test(value)) {
+            setService(value);
+        }
     }
 
     return(
@@ -31,11 +49,19 @@ export default function createReceitp(){
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="service">Taxa de serviço</Label>
-                    <Input type="text"/>
+                    <Input 
+                        type="text"
+                        value={service}
+                        onChange={handleserviceChange}
+                    />
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="cover">Cover</Label>
-                    <Input type="text"/>
+                    <Input     
+                        type="text"
+                        value={cost}
+                        onChange={handlecoverChange}
+                    />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Dialog >
