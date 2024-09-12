@@ -65,7 +65,7 @@ export default function Home() {
                                     <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
                                         <Receipt color="#3b82f6" weight="fill" size={32} />
                                     </div>
-                                    <Badge variant={"default"} className="h-6 bg-green-500">Aberta</Badge>
+                                    <Badge variant={"default"} className="h-6 bg-green-500">Fechada</Badge>
                                 </CardHeader>
                                 <CardContent className="flex flex-col px-2 pb-2 gap-2">
                                     <p className="font-semibold">{receipt.title}</p>
