@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
 
 import Header from "@/components/header";
 import EmptyState from "@/components/emptyState";
@@ -13,6 +12,7 @@ import { Plus, Receipt } from "@phosphor-icons/react";
 import { getReceiptsAll, ReceiptProps } from "@/routes/receipts";
 
 import imgUrl from '../../assets/nodata.svg'
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
     const myUserId = "df4db3ff-2482-4fc0-b57b-311e849a0259"
@@ -21,14 +21,12 @@ export default function Home() {
     async function responseGetAllReceipts(){
         const response = await getReceiptsAll()
 
-        //create error for empty receipts
-
         if(response != null){
             const responsefilterReceiptsForUserOwner = response.filter(receipt => receipt.userOwner === myUserId);
             const responsefilterReceiptsForIsClose = responsefilterReceiptsForUserOwner.filter(receipt => receipt.isClose === false)
             setReceipts(responsefilterReceiptsForIsClose)
         }else{
-            toast.error('Response empty of receipts')
+            return null
         }
 
         
@@ -76,7 +74,20 @@ export default function Home() {
                         </Link>
                     )) 
                     : 
-                    <EmptyState path={imgUrl} title={'Sem recibos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
+                    <Card className="mt-2">
+                        <CardHeader className="flex flex-row p-2 justify-between">
+                            <Skeleton className="w-12 h-12 rounded-md" />
+                            <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                        </CardHeader>
+                        <CardContent className="flex flex-col px-2 pb-2 gap-2">
+                            <Skeleton className="w-[130px] h-[20px] rounded-full" />
+                            <Skeleton className="w-[250px] h-[10px] rounded-full" />
+                            <Skeleton className="w-[100px] h-[10px] rounded-full" />
+                            <div className="flex flex-row mt-2">
+                                <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                            </div>
+                        </CardContent>
+                    </Card>
                     }
                 </TabsContent>
                 <TabsContent value="RecibosFechados">
