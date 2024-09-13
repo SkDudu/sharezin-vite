@@ -1,6 +1,8 @@
 import axios from 'axios'
 
 export interface ReceiptProps {
+    receipts: any;
+    users: any;
     id: string,
     title: string,
     description?: string,
@@ -18,23 +20,27 @@ export async function getReceiptsAll() {
 }
 
 export async function getOneReceipt(receiptIdParams: String){
-    const receipt = await axios.get<ReceiptProps[]>(`${process.env.API_URL}/receipt/${receiptIdParams}`);
-    return receipt.data
+    const receipt = await axios.get<ReceiptProps>(`${import.meta.env.VITE_API_URL}/receipt/${receiptIdParams}`);
+    if(receipt != null || undefined){
+        return await receipt.data.receipts
+    }else{
+        return null
+    }
 }
 
 export async function createReceipt(){
     try {
-        const receipts = await axios.post<ReceiptProps[]>(`${process.env.API_URL}/createReceipts`);
-        console.log(receipts);
+        const receipt = await axios.post<ReceiptProps>(`${import.meta.env.VITE_API_URL}/createReceipt`);
+        console.log(receipt);
     } catch (error) {
         console.error(error);
     }
 }
 
-export async function updateReceipt(){
+export async function updateReceipt(receiptIdParams: String){
     try {
-        const receipts = await axios.patch<ReceiptProps[]>(`${process.env.API_URL}/createReceipts`);
-        console.log(receipts);
+        const receipt = await axios.patch<ReceiptProps>(`${import.meta.env.VITE_API_URL}/receipt/${receiptIdParams}`);
+        console.log(receipt);
     } catch (error) {
         console.error(error);
     }

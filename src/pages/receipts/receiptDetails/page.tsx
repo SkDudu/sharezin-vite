@@ -13,7 +13,7 @@ import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
 export default function ReceiptDetails(){
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
 
-    const [receipt, setReceipt] = useState<ReceiptProps[]>()
+    const [receipt, setReceipt] = useState<ReceiptProps | null>()
 
     async function responseGetOneReceipt(){
         const response = await getOneReceipt(receiptIdParams as string)
@@ -24,9 +24,6 @@ export default function ReceiptDetails(){
             toast.error('Não tem recibo.')
         }
     }
-
-    console.log(receiptIdParams)
-    console.log(receipt)
 
     useEffect(()=>{
         responseGetOneReceipt()
@@ -39,8 +36,8 @@ export default function ReceiptDetails(){
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-col">
-                            <p className="text-xl text-black font-semibold">tiasdpaoisdaspodjo</p>
-                            <p className="text-base text-black font-light">Responsável: Eduardo santos</p>
+                            <p className="text-xl text-black font-semibold">{receipt?.title}</p>
+                            <p className="text-base text-black font-light">Responsável: {receipt?.users.name}</p>
                         </div>
                         <Sheet>
                             <SheetTrigger>
@@ -147,20 +144,20 @@ export default function ReceiptDetails(){
                                 <Percent />
                                 <p className="text-base text-black font-light">Taxa do garçom</p>
                             </div>
-                            <p className="text-xl text-black font-medium">10%</p>
+                            <p className="text-xl text-black font-medium">{receipt?.tax_service ? (receipt.tax_service * 100).toFixed(2) : 'N/A'}</p>
                         </div>
                         <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
                             <div className="flex flex-row items-center gap-1">
                                 <MicrophoneStage />
                                 <p className="text-base text-black font-light">Taxa do cover</p>
                             </div>
-                            <p className="text-xl text-black font-medium">R$ 15,00</p>
+                            <p className="text-xl text-black font-medium">R$ {receipt?.tax_cover}</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <p className="text-xl text-black font-semibold">Participantes</p>
+                    <p className="text-xl text-black font-semibold">Historico</p>
                     <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
                         <div className="flex flex-col gap-1">
                             <p className="text-base text-black font-normal">Bruna Marquezine</p>

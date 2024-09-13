@@ -44,7 +44,7 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/editReceipt/:receiptID?',
+    path: '/editReceipt/:receiptIdParams',
     element: <EditReceipt />,
     errorElement: <Error />
   },
