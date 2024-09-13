@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
