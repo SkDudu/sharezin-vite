@@ -1,5 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { AxiosResponse } from "axios";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import HeaderWithBack from "@/components/headerWithBack";
 import { Button } from "@/components/ui/button";
@@ -7,25 +9,38 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
 
-export default function ReceiptDetails(){
-    const navigate = useNavigate()
+import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
 
-    function exitReceipt(){
-        toast.success('Conta encerrada com sucesso.')
+export default function ReceiptDetails(){
+    const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
+
+    const [receipt, setReceipt] = useState<ReceiptProps[]>()
+
+    async function responseGetOneReceipt(){
+        const response = await getOneReceipt(receiptIdParams as string)
+
+        if(response != null){
+            setReceipt(response)
+        }else{
+            toast.error('Não tem recibo.')
+        }
     }
+
+    console.log(receiptIdParams)
+    console.log(receipt)
+
+    useEffect(()=>{
+        responseGetOneReceipt()
+    },[receiptIdParams])
 
     return(
         <>
-            <Toaster
-                position="top-right"
-                reverseOrder={false}
-            />
             <HeaderWithBack path={'/'} title={'Detalhes do recibo'} />
             <div className="flex flex-col pt-4 pl-4 pr-4 gap-4">
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-col">
-                            <p className="text-xl text-black font-semibold">Título do recibo</p>
+                            <p className="text-xl text-black font-semibold">tiasdpaoisdaspodjo</p>
                             <p className="text-base text-black font-light">Responsável: Eduardo santos</p>
                         </div>
                         <Sheet>
@@ -76,7 +91,7 @@ export default function ReceiptDetails(){
                                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                                 </DialogClose>
                                                 <Link to={'/'} className="w-full">
-                                                    <Button variant={"default"} onClick={exitReceipt} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
+                                                    <Button variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
                                                 </Link>
                                             </div>
                                         </DialogContent>
@@ -100,7 +115,7 @@ export default function ReceiptDetails(){
                                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                                 </DialogClose>
                                                 <Link to={'/'} className="w-full">
-                                                    <Button variant={"default"} onClick={exitReceipt} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
+                                                    <Button variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
                                                 </Link>
                                             </div>
                                         </DialogContent>
@@ -115,7 +130,7 @@ export default function ReceiptDetails(){
                         <p className="text-4xl text-black font-semibold">R$ 34,32</p>
                     </div>
 
-                    <Button onClick={()=>{navigate('/addcost')}}>
+                    <Button>
                         <Plus size={18} weight="bold"/>
                         <p className="text-base text-white font-light pl-2">Adicionar valor</p>
                     </Button>

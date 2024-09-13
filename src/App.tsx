@@ -14,7 +14,7 @@ import './App.css'
 
 const router = createBrowserRouter([
   {
-    path: "/:action?",
+    path: "/",
     element: <Home />,
     errorElement: <Error />
   },
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/receiptDetails/:receiptID/:action?',
+    path: '/receiptDetails/:receiptIdParams',
     element: <ReceitpDetails />,
     errorElement: <Error />
   },
