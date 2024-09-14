@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -8,25 +8,66 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 
-export default function createReceitp(){
-    const [cost, setCost] = useState('');
-    const [service, setService] = useState('');
+import { createReceipt } from "@/routes/receipts";
 
-    function actionCreateReceitp(){
-        toast.success('Recibo criado com sucesso.')
+export default function createReceitp(){
+    const [titleField, setTitleField] = useState('');
+    const [descriptionField, setDescriptionField] = useState('');
+    const [restaurantField, setRestaurantField] = useState('');
+    const [coverField, setCoverField] = useState('');
+    const [serviceField, setServiceField] = useState('');
+
+    const code_invitation = 'QUERTY'
+    const userOwner = '94ab41ef-bb54-4524-8354-5a33247bd660'
+
+    async function actionCreateReceitp(){
+        try{
+            const response = await createReceipt(
+                titleField,
+                descriptionField,
+                restaurantField,
+                coverField,
+                serviceField,
+                code_invitation,
+                userOwner,
+            )
+            
+            if(response != null){
+                toast.success('Recibo criado com sucesso.')
+                redirect(`/receitpDetails/${response.id}`)
+            }
+        }catch(error){
+            toast.error('Erro ao criar esse recibo, tente novamente.')
+            console.log(error)
+        }
     }
+
+    function handleTitleChange(event: any) {
+        const { value } = event.target;
+        setTitleField(value);
+    }
+
+    function handleDescriptionChange(event: any) {
+        const { value } = event.target;
+        setDescriptionField(value);
+    }
+
+    function handleRestaurantChange(event: any) {
+        const { value } = event.target;
+        setRestaurantField(value);
+    }
+
 
     function handlecoverChange(event: any) {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            setCost(value);
+            setCoverField(value);
         }
     }
-
     function handleserviceChange(event: any) {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            setService(value);
+            setServiceField(value);
         }
     }
 
@@ -37,30 +78,24 @@ export default function createReceitp(){
                 <p className="font-normal text-base">Para criar o recibo compartilhado, insira as informações abaixo.</p>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="title">Título</Label>
-                    <Input type="text"/>
+                    <Input type="text" value={titleField} onChange={handleTitleChange}/>
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="description">Descrição</Label>
-                    <Input type="text"/>
+                    <Input type="text" value={descriptionField} onChange={handleDescriptionChange}/>
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="restaurant">Restaurante</Label>
-                    <Input type="text"/>
+                    <Input type="text" value={restaurantField} onChange={handleRestaurantChange}/>
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="service">Taxa de serviço</Label>
-                    <Input 
-                        type="text"
-                        value={service}
-                        onChange={handleserviceChange}
+                    <Input type="text" value={serviceField} onChange={handleserviceChange}
                     />
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="cover">Cover</Label>
-                    <Input     
-                        type="text"
-                        value={cost}
-                        onChange={handlecoverChange}
+                    <Input type="text" value={coverField} onChange={handlecoverChange}
                     />
                 </div>
                 <div className="flex flex-col gap-2">

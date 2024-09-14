@@ -28,13 +28,11 @@ export async function getOneReceipt(receiptIdParams: String){
     }
 }
 
-export async function createReceipt(){
-    try {
-        const receipt = await axios.post<ReceiptProps>(`${import.meta.env.VITE_API_URL}/createReceipt`);
-        console.log(receipt);
-    } catch (error) {
-        console.error(error);
-    }
+export async function createReceipt(title: string, description: string, restaurant_name: string, tax_cover: string, tax_service: string, code_invitation: string, userOwner: string){
+    const response = await axios.post<ReceiptProps>(`${import.meta.env.VITE_API_URL}/createReceipt`, {
+        title, description, restaurant_name, tax_cover, tax_service, code_invitation, userOwner
+    });
+    return response.data;
 }
 
 export async function updateReceipt(receiptIdParams: String){
