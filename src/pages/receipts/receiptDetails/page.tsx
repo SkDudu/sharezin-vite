@@ -21,7 +21,7 @@ export default function ReceiptDetails(){
         if(response != null){
             setReceipt(response)
         }else{
-            toast.error('Não tem recibo.')
+            toast.error('Esse recibo não existe.')
         }
     }
 
@@ -144,23 +144,23 @@ export default function ReceiptDetails(){
                                 <Percent />
                                 <p className="text-base text-black font-light">Taxa do garçom</p>
                             </div>
-                            <p className="text-xl text-black font-medium">{receipt?.tax_service ? (receipt.tax_service * 100).toFixed(2) : 'N/A'}</p>
+                            <p className="text-xl text-black font-medium">{receipt?.tax_service}%</p>
                         </div>
                         <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
                             <div className="flex flex-row items-center gap-1">
                                 <MicrophoneStage />
                                 <p className="text-base text-black font-light">Taxa do cover</p>
                             </div>
-                            <p className="text-xl text-black font-medium">R$ {receipt?.tax_cover}</p>
+                            <p className="text-xl text-black font-medium">R$ {receipt?.tax_cover},00</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <p className="text-xl text-black font-semibold">Historico</p>
+                    <p className="text-xl text-black font-semibold">Histórico</p>
                     <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
                         <div className="flex flex-col gap-1">
-                            <p className="text-base text-black font-normal">Bruna Marquezine</p>
+                            <p className="text-base text-black font-normal">Barbara</p>
                             <div className="flex flex-row items-center gap-1">
                                 <Clock />
                                 <p className="text-base text-black font-light">21:32</p>

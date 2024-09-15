@@ -14,11 +14,11 @@ export default function createReceitp(){
     const [titleField, setTitleField] = useState('');
     const [descriptionField, setDescriptionField] = useState('');
     const [restaurantField, setRestaurantField] = useState('');
-    const [coverField, setCoverField] = useState('');
-    const [serviceField, setServiceField] = useState('');
+    const [coverField, setCoverField] = useState<number>(0);
+    const [serviceField, setServiceField] = useState<number>(0);
 
     const code_invitation = 'QUERTY'
-    const userOwner = '94ab41ef-bb54-4524-8354-5a33247bd660'
+    const userOwner = 'c692360d-2716-428e-99fc-12f67045736c'
     const isClose = false
 
     async function actionCreateReceitp(){
@@ -63,13 +63,16 @@ export default function createReceitp(){
     function handlecoverChange(event: any) {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            setCoverField(value);
+            const valuerNumber = parseFloat(value)
+            setCoverField(valuerNumber);
         }
     }
+
     function handleserviceChange(event: any) {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            setServiceField(value);
+            const valuerNumber = parseFloat(value)
+            setServiceField(valuerNumber);
         }
     }
 

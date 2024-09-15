@@ -15,7 +15,7 @@ import imgUrl from '../../assets/nodata.svg'
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-    const myUserId = "df4db3ff-2482-4fc0-b57b-311e849a0259"
+    const myUserId = "c692360d-2716-428e-99fc-12f67045736c"
     const [receipts, setReceipts] = useState<ReceiptProps[]>([])
 
     async function responseGetAllReceipts(){
