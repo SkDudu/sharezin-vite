@@ -1,4 +1,4 @@
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import toast from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -19,6 +19,7 @@ export default function createReceitp(){
 
     const code_invitation = 'QUERTY'
     const userOwner = '94ab41ef-bb54-4524-8354-5a33247bd660'
+    const isClose = false
 
     async function actionCreateReceitp(){
         try{
@@ -30,6 +31,7 @@ export default function createReceitp(){
                 serviceField,
                 code_invitation,
                 userOwner,
+                isClose
             )
             
             if(response != null){
