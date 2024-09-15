@@ -5,7 +5,7 @@ export interface ReceiptProps {
     users: any;
     id: string,
     title: string,
-    description?: string,
+    description: string,
     restaurant_name: string,
     tax_cover: number,
     tax_service: number,
@@ -28,9 +28,9 @@ export async function getOneReceipt(receiptIdParams: String){
     }
 }
 
-export async function createReceipt(title: string, description: string, restaurant_name: string, tax_cover: string, tax_service: string, code_invitation: string, userOwner: string){
+export async function createReceipt(title: string, description: string, restaurant_name: string, tax_cover: string, tax_service: string, code_invitation: string, userOwner: string, isClose: boolean){
     const response = await axios.post<ReceiptProps>(`${import.meta.env.VITE_API_URL}/createReceipt`, {
-        title, description, restaurant_name, tax_cover, tax_service, code_invitation, userOwner
+        title, description, restaurant_name, tax_cover, tax_service, code_invitation, userOwner, isClose
     });
     return response.data;
 }
