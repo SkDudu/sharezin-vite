@@ -7,12 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Receipt } from "@phosphor-icons/react";
 
 import { getReceiptsAll, ReceiptProps } from "@/routes/receipts";
 
 import imgUrl from '../../assets/nodata.svg'
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
     const myUserId = "c692360d-2716-428e-99fc-12f67045736c"
@@ -37,7 +37,7 @@ export default function Home() {
     },[])
 
     return (
-        <div className="flex flex-col p-4 gap-2">
+        <div className="flex flex-col p-4 gap-2 w-screen h-screen">
             <Header />
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
@@ -45,9 +45,9 @@ export default function Home() {
                     <TabsTrigger value="RecibosFechados" className="w-full">Recibos fechados</TabsTrigger>
                 </TabsList>
                 <TabsContent value="meusRecibos">
-                    {receipts.length > 0 ? receipts.map((receipt: ReceiptProps) => (
+                {receipts.length > 0 ? receipts.map((receipt: ReceiptProps) => (
                         <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
-                            <Card className="mt-2">
+                            <Card className="mb-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
                                     <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
                                         <Receipt color="#3b82f6" weight="fill" size={32} />
@@ -113,7 +113,7 @@ export default function Home() {
                 </TabsContent>
             </Tabs>
             <Link to='/createReceipt'>
-                <Button className="absolute bg-blue-950 top-[85%] left-[80%] rounded-full w-15 h-15 p-3">
+                <Button className="fixed bg-blue-950 top-[85%] left-[80%] rounded-full w-15 h-15 p-3">
                     <Plus size={32}/>
                 </Button>
             </Link>
