@@ -36,10 +36,10 @@ export default function AddCostToReceipt(){
                 </div>
 
                 <div className="flex flex-col gap-3 pb-2">
-                    <Link to={'/receiptDetails/1'}>
+                    <Link to={'/receiptDetails'}>
                         <Button variant={"default"} onClick={addCost} className="w-full">Adicionar custo</Button>
                     </Link>
-                    <Link to={'/receiptDetails/1'}>
+                    <Link to={'/receiptDetails'}>
                         <Button variant={"secondary"} className="w-full">Cancelar</Button>
                     </Link>
                 </div>

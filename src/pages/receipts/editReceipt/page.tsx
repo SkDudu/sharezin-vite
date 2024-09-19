@@ -16,6 +16,7 @@ export default function editReceitp(){
     const { data } = location.state || {}
 
     const [form, setForm] = useState({
+        id: data.id,
         title: '',
         description: '',
         restaurant_name: '',
@@ -23,11 +24,12 @@ export default function editReceitp(){
         tax_cover: 0
     });
 
-    console.log(data)
+    console.log(data.id)
 
     async function actionEditReceipt(){
         try{
             const response = await updateReceipt(
+                form.id,
                 form.title,
                 form.description,
                 form.restaurant_name,
@@ -122,9 +124,7 @@ export default function editReceitp(){
                                 <DialogClose className="w-full">
                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                 </DialogClose>
-                                <Link to={'/receiptDetails/1'} className="w-full">
-                                    <Button variant={"default"} onClick={actionEditReceipt} className="w-full">Sim</Button>
-                                </Link>
+                                <Button variant={"default"} onClick={actionEditReceipt} className="w-full">Sim</Button>
                             </div>
                         </DialogContent>
                     </Dialog>

@@ -21,7 +21,7 @@ export default function shareReceipt(){
                         </Button>
                     </div>
                 </div>
-                <Link to={'/receiptDetails/1'}>
+                <Link to={'/receiptDetails'}>
                     <Button variant={"secondary"} className="w-full mb-2">
                         Voltar
                     </Button>

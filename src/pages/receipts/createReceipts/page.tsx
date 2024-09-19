@@ -37,7 +37,7 @@ export default function createReceitp(){
             
             if(response != null){
                 toast.success('Recibo criado com sucesso.')
-                navigate(`/receitpDetails/${response.id}`)
+                navigate('/')
             }
         }catch(error){
             toast.error('Erro ao criar esse recibo, tente novamente.')

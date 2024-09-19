@@ -34,8 +34,8 @@ export default function ReceiptDetails(){
                     title: receipt?.title,
                     description: receipt?.description,
                     restaurant_name: receipt?.restaurant_name,
-                    tax_service: receipt?.tax_service,
-                    tax_cover: receipt?.tax_cover
+                    tax_service: Number(receipt?.tax_service),
+                    tax_cover: Number(receipt?.tax_cover)
                 }
             }
         })
@@ -70,7 +70,7 @@ export default function ReceiptDetails(){
                                         <PencilSimple color="#0c0a09" weight="regular" size={18} />
                                         Editar informações do recibo
                                     </Button>
-                                    <Link to={'/shareReceipt/1'}>
+                                    <Link to={'/shareReceipt'}>
                                         <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
                                             <ShareNetwork color="#0c0a09" weight="regular" size={18} />
                                             Compartilhar recibo

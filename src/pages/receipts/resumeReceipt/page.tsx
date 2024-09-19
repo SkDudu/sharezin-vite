@@ -34,7 +34,7 @@ export default function resumeReceipt(){
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <Link to={'/receiptDetails/1'}>
+                    <Link to={'/receiptDetails'}>
                         <Button variant={"default"} onClick={exitReceipt} className="w-full bg-red-500 hover:bg-red-400">Encerrar recibo</Button>
                     </Link>
                     <Link to={'/receiptDetails/1'}>
