@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import toast from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -11,7 +11,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { updateReceipt } from "@/routes/receipts";
 
 export default function editReceitp(){
-    const navigate = useNavigate();
     const location = useLocation()
     const { data } = location.state || {}
 
@@ -23,8 +22,6 @@ export default function editReceitp(){
         tax_service: 0,
         tax_cover: 0
     });
-
-    console.log(data.id)
 
     async function actionEditReceipt(){
         try{
@@ -39,7 +36,6 @@ export default function editReceitp(){
             
             if(response != null){
                 toast.success('Recibo editado com sucesso.')
-                navigate(`/receitpDetails/${data.id}`)
             }
         }catch(error){
             toast.error('Erro ao criar esse recibo, tente novamente.')
@@ -124,7 +120,9 @@ export default function editReceitp(){
                                 <DialogClose className="w-full">
                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                 </DialogClose>
-                                <Button variant={"default"} onClick={actionEditReceipt} className="w-full">Sim</Button>
+                                <Link to={`/receiptDetails/${data.id}`} className="w-full">
+                                    <Button variant={"default"} onClick={actionEditReceipt} className="w-full">Sim</Button>
+                                </Link>
                             </div>
                         </DialogContent>
                     </Dialog>
