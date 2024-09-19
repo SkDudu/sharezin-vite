@@ -36,10 +36,10 @@ export async function createReceipt(title: string, description: string, restaura
     return response.data;
 }
 
-export async function updateReceipt(title: string, description: string, restaurant_name: string, tax_cover: number, tax_service: number){
+export async function updateReceipt(id: string, title: string, description: string, restaurant_name: string, tax_cover: number, tax_service: number){
     try {
         const response = await axios.patch<ReceiptProps>(`${import.meta.env.VITE_API_URL}/editReceipt`, {
-            title, description, restaurant_name, tax_cover, tax_service
+            id, title, description, restaurant_name, tax_cover, tax_service
         });
         return response.data.receipts;
     } catch (error) {
