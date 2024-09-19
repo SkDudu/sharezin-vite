@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,7 @@ import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus,
 import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
 
 export default function ReceiptDetails(){
+    const navigate = useNavigate()
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
 
     const [receipt, setReceipt] = useState<ReceiptProps | null>()
@@ -23,6 +24,21 @@ export default function ReceiptDetails(){
         }else{
             toast.error('Esse recibo não existe.')
         }
+    }
+
+    function navigateToEditReceipt(){
+        navigate('/editReceipt', {
+            state: {
+                data: {
+                    id: receipt?.id,
+                    title: receipt?.title,
+                    description: receipt?.description,
+                    restaurant_name: receipt?.restaurant_name,
+                    tax_service: receipt?.tax_service,
+                    tax_cover: receipt?.tax_cover
+                }
+            }
+        })
     }
 
     useEffect(()=>{
@@ -50,12 +66,10 @@ export default function ReceiptDetails(){
                                     <SheetTitle>Opções</SheetTitle>
                                 </SheetHeader>
                                 <div className="flex flex-col mt-2 gap-2">
-                                    <Link to={'/editReceipt/1'}>
-                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                            <PencilSimple color="#0c0a09" weight="regular" size={18} />
-                                            Editar informações do recibo
-                                        </Button>
-                                    </Link>
+                                    <Button variant={"default"} onClick={navigateToEditReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                        <PencilSimple color="#0c0a09" weight="regular" size={18} />
+                                        Editar informações do recibo
+                                    </Button>
                                     <Link to={'/shareReceipt/1'}>
                                         <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
                                             <ShareNetwork color="#0c0a09" weight="regular" size={18} />

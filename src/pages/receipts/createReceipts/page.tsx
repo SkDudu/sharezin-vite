@@ -1,4 +1,4 @@
-import { Link, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -11,6 +11,7 @@ import { useState } from "react";
 import { createReceipt } from "@/routes/receipts";
 
 export default function createReceitp(){
+    const navigate = useNavigate();
     const [titleField, setTitleField] = useState('');
     const [descriptionField, setDescriptionField] = useState('');
     const [restaurantField, setRestaurantField] = useState('');
@@ -36,7 +37,7 @@ export default function createReceitp(){
             
             if(response != null){
                 toast.success('Recibo criado com sucesso.')
-                redirect(`/receitpDetails/${response.id}`)
+                navigate(`/receitpDetails/${response.id}`)
             }
         }catch(error){
             toast.error('Erro ao criar esse recibo, tente novamente.')
