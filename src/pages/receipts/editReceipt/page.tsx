@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 
 import HeaderWithBack from "@/components/headerWithBack";
