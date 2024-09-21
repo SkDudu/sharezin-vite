@@ -60,7 +60,7 @@ export default function editReceitp(){
     const handleChangeService = (event: any) => {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
+            const valuerNumber = value === '' ? 0 : parseFloat(value)
             setForm(prev => ({
                 ...prev,
                 tax_service: valuerNumber
@@ -71,7 +71,7 @@ export default function editReceitp(){
     const handleChangeCover = (event: any) => {
         const { value } = event.target;
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
+            const valuerNumber = value === '' ? 0 : parseFloat(value)
             setForm(prev => ({
                 ...prev,
                 tax_cover: valuerNumber

@@ -41,6 +41,17 @@ export default function ReceiptDetails(){
         })
     }
 
+    function navigateToAddCostInReceipt(){
+        navigate('/addValueInReceipt', {
+            state: {
+                data: {
+                    userId: 'c692360d-2716-428e-99fc-12f67045736c',
+                    receiptId: receiptIdParams
+                }
+            }
+        })
+    }
+
     useEffect(()=>{
         responseGetOneReceipt()
     },[receiptIdParams])
@@ -140,7 +151,7 @@ export default function ReceiptDetails(){
                         <p className="text-4xl text-black font-semibold">R$ 34,32</p>
                     </div>
 
-                    <Button>
+                    <Button onClick={navigateToAddCostInReceipt}>
                         <Plus size={18} weight="bold"/>
                         <p className="text-base text-white font-light pl-2">Adicionar valor</p>
                     </Button>

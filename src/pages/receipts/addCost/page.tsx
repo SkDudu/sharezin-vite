@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import HeaderWithBack from "@/components/headerWithBack";
@@ -6,9 +7,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { addValueInReceipt } from "@/routes/historics";
+
 export default function AddCostToReceipt(){
-    function addCost(){
-        toast.success('Valor adicionado com sucesso.')
+    const location = useLocation()
+    const { data } = location.state || {}
+
+    const navigate = useNavigate();
+
+    const [nameProductField, setNameProduct] = useState('');
+    const [valueProductField, setValueProduct] = useState<number>(0);
+
+    async function actionAddCostInReceitp(){
+        try{
+            const response = await addValueInReceipt(
+                nameProductField,
+                valueProductField,
+                data.userId,
+                data.receiptId
+            )
+            
+            if(response != null){
+                toast.success('Valor adicionado com sucesso.')
+                navigate(`/receiptDetails/${data.receiptId}`)
+            }
+        }catch(error){
+            toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
+            console.log(error)
+        }
+    }
+
+    function handlenameProductChange(event: any) {
+        const { value } = event.target;
+        setNameProduct(value);
+    }
+
+    function handlecostChange(event: any) {
+        const { value } = event.target;
+        if (/^\d*\.?\d*$/.test(value)) {
+            const valuerNumber = value === '' ? 0 : parseFloat(value)
+            setValueProduct(valuerNumber);
+        }
     }
 
     return(
@@ -26,20 +65,18 @@ export default function AddCostToReceipt(){
 
                     <div className="flex flex-col gap-1">
                         <Label htmlFor="cover">Nome do prato ou bebida</Label>
-                        <Input type="text" className=""/>
+                        <Input type="text" value={nameProductField} onChange={handlenameProductChange}/>
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <Label htmlFor="cover">Custo</Label>
-                        <Input type="text"/>
+                        <Input type="text" value={valueProductField} onChange={handlecostChange}/>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-3 pb-2">
-                    <Link to={'/receiptDetails'}>
-                        <Button variant={"default"} onClick={addCost} className="w-full">Adicionar custo</Button>
-                    </Link>
-                    <Link to={'/receiptDetails'}>
+                    <Button variant={"default"} onClick={actionAddCostInReceitp} className="w-full">Adicionar custo</Button>
+                    <Link to={`/receiptDetails/${data.receiptId}`}>
                         <Button variant={"secondary"} className="w-full">Cancelar</Button>
                     </Link>
                 </div>
