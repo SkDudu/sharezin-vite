@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/addcost',
+    path: '/addValueInReceipt',
     element: <AddCost />,
     errorElement: <Error />
   },

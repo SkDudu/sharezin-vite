@@ -5,7 +5,7 @@ export interface HistoricProps {
     nameProduct: string,
     valueProduct: number,
     userId: string,
-    receiptId: number
+    receiptId: string
 }
 
 export async function getAllHistoric(){
@@ -16,4 +16,11 @@ export async function getAllHistoric(){
 export async function getHistoricByReceiptId(receiptIdParams: String) {
     const response = await axios.get<HistoricProps[]>(`${import.meta.env.VITE_API_URL}/histoticsAllReceipts/${receiptIdParams}`)
     return response.data;
+}
+
+export async function addValueInReceipt(nameProduct: string, valueProduct: number, userId: string, receiptId: string){
+    const response = await axios.post<HistoricProps>(`${import.meta.env.VITE_API_URL}/addValueInReceipt`, {
+        nameProduct, valueProduct, userId, receiptId
+    })
+    return response.data
 }
