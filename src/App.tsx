@@ -52,6 +52,11 @@ const router = createBrowserRouter([
     path: '/shareReceipt/:receiptID?',
     element: <ShareReceipt />,
     errorElement: <Error />
+  },
+  {
+    path: '/historicOfReceipt/:receiptIdParams',
+    element: <></>,
+    errorElement: <Error />
   }
 ])
 
