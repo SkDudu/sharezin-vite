@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 
+import generateRandomCode from "@/lib/randomCodeGenerator";
 import { createReceipt } from "@/routes/receipts";
 
 export default function createReceitp(){
@@ -44,6 +45,9 @@ export default function createReceitp(){
             console.log(error)
         }
     }
+
+    const randomCode: string = generateRandomCode(5);
+    console.log(randomCode);
 
     function handleTitleChange(event: any) {
         const { value } = event.target;
@@ -91,7 +95,7 @@ export default function createReceitp(){
                     <Input type="text" value={descriptionField} onChange={handleDescriptionChange}/>
                 </div>
                 <div className="flex flex-col gap-1">
-                    <Label htmlFor="restaurant">Restaurante</Label>
+                    <Label htmlFor="restaurant">Local</Label>
                     <Input type="text" value={restaurantField} onChange={handleRestaurantChange}/>
                 </div>
                 <div className="flex flex-col gap-1">

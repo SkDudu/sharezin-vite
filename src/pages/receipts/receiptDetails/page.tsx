@@ -9,12 +9,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
 
 import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
+import { getHistoricByReceiptId, HistoricProps } from "@/routes/historics";
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
 
     const [receipt, setReceipt] = useState<ReceiptProps | null>()
+    const [historics, setHistorics] = useState<HistoricProps[] | null>()
 
     async function responseGetOneReceipt(){
         const response = await getOneReceipt(receiptIdParams as string)
@@ -24,6 +26,11 @@ export default function ReceiptDetails(){
         }else{
             toast.error('Esse recibo não existe.')
         }
+    }
+
+    async function responseGetHistoric(){
+        const response = await getHistoricByReceiptId(receiptIdParams as string)
+        setHistorics(response)
     }
 
     function navigateToEditReceipt(){
@@ -54,6 +61,7 @@ export default function ReceiptDetails(){
 
     useEffect(()=>{
         responseGetOneReceipt()
+        responseGetHistoric()
     },[receiptIdParams])
 
     return(
@@ -183,16 +191,19 @@ export default function ReceiptDetails(){
 
                 <div className="flex flex-col gap-2">
                     <p className="text-xl text-black font-semibold">Histórico</p>
-                    <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
-                        <div className="flex flex-col gap-1">
-                            <p className="text-base text-black font-normal">Barbara</p>
-                            <div className="flex flex-row items-center gap-1">
-                                <Clock />
-                                <p className="text-base text-black font-light">21:32</p>
+                    {historics?.map((historic) => (
+                        <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
+                            <div className="flex flex-col gap-1">
+                                <p className="text-base text-black font-normal">{historic.nameProduct}</p>
+                                <div className="flex flex-row items-center gap-1">
+                                    <Clock />
+                                    <p className="text-base text-black font-light">{new Date(historic.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                    </p>
+                                </div>
                             </div>
+                            <p className="text-lg text-black font-semibold">{parseFloat(historic.valueProduct).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         </div>
-                        <p className="text-lg text-black font-semibold">R$ 34,36</p>
-                    </div>
+                    ))}
                 </div>
             </div>
         </>

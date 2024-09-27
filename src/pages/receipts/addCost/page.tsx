@@ -16,7 +16,7 @@ export default function AddCostToReceipt(){
     const navigate = useNavigate();
 
     const [nameProductField, setNameProduct] = useState('');
-    const [valueProductField, setValueProduct] = useState<number>(0);
+    const [valueProductField, setValueProduct] = useState('');
 
     async function actionAddCostInReceitp(){
         try{
@@ -44,9 +44,8 @@ export default function AddCostToReceipt(){
 
     function handlecostChange(event: any) {
         const { value } = event.target;
-        if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = value === '' ? 0 : parseFloat(value)
-            setValueProduct(valuerNumber);
+        if (/^\d*([.,]?\d*)$/.test(value)) {
+            setValueProduct(value);
         }
     }
 
