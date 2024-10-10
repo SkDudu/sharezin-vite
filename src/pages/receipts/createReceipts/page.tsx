@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from "react";
 
 import generateRandomCode from "@/lib/randomCodeGenerator";
+
 import { createReceipt } from "@/routes/receipts";
 
 export default function createReceitp(){
@@ -19,7 +20,6 @@ export default function createReceitp(){
     const [coverField, setCoverField] = useState<number>(0);
     const [serviceField, setServiceField] = useState<number>(0);
 
-    const code_invitation = 'QUERTY'
     const userOwner = 'c692360d-2716-428e-99fc-12f67045736c'
     const isClose = false
 
@@ -46,8 +46,7 @@ export default function createReceitp(){
         }
     }
 
-    const randomCode: string = generateRandomCode(5);
-    console.log(randomCode);
+    const code_invitation: string = generateRandomCode(8);
 
     function handleTitleChange(event: any) {
         const { value } = event.target;

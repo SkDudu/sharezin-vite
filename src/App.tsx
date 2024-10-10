@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/searchReceipts/:name?',
+    path: '/searchReceipts/:code?',
     element: <SearchReceipt />,
     errorElement: <Error />
   },
