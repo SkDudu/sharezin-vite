@@ -1,5 +1,5 @@
 export default function generateRandomCode(length: number): string {
-    const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code: string = '';
     
     for (let i = 0; i < length; i++) {
