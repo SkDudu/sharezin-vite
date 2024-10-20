@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import HeaderWithBack from "@/components/headerWithBack";
+import EmptyStateParticipants from "@/components/emptyStateParticipants";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
 import { getHistoricByReceiptId, HistoricProps } from "@/routes/historics";
@@ -16,7 +19,8 @@ export default function ReceiptDetails(){
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
 
     const [receipt, setReceipt] = useState<ReceiptProps | null>()
-    const [historics, setHistorics] = useState<HistoricProps[] | null>()
+    const [historics, setHistorics] = useState<HistoricProps[]>([])
+    const [loading, setLoading] = useState(true)
 
     async function responseGetOneReceipt(){
         const response = await getOneReceipt(receiptIdParams as string)
@@ -30,7 +34,14 @@ export default function ReceiptDetails(){
 
     async function responseGetHistoric(){
         const response = await getHistoricByReceiptId(receiptIdParams as string)
-        setHistorics(response)
+
+        if(response != null){
+            setHistorics(response)
+            setLoading(false)
+        } else{
+            setHistorics([])
+            setLoading(false)
+        }
     }
 
     function navigateToEditReceipt(){
@@ -48,12 +59,35 @@ export default function ReceiptDetails(){
         })
     }
 
+    function navigateToShareReceipt(){
+        navigate('/shareReceipt', {
+            state: {
+                data: {
+                    id: receipt?.id,
+                    code: receipt?.code_invitation
+                }
+            }
+        })
+    }
+
     function navigateToAddCostInReceipt(){
         navigate('/addValueInReceipt', {
             state: {
                 data: {
                     userId: 'c692360d-2716-428e-99fc-12f67045736c',
                     receiptId: receiptIdParams
+                }
+            }
+        })
+    }
+
+    function navigateToResumeReceipt(){
+        navigate('/resumeReceipt', {
+            state: {
+                data: {
+                    id: receipt?.id,
+                    title: receipt?.title,
+                    restaurant_name: receipt?.restaurant_name
                 }
             }
         })
@@ -89,18 +123,14 @@ export default function ReceiptDetails(){
                                         <PencilSimple color="#0c0a09" weight="regular" size={18} />
                                         Editar informações do recibo
                                     </Button>
-                                    <Link to={'/shareReceipt'}>
-                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                            <ShareNetwork color="#0c0a09" weight="regular" size={18} />
-                                            Compartilhar recibo
-                                        </Button>
-                                    </Link>
-                                    <Link to={'/resumeReceipt'}>
-                                        <Button variant={"default"} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                            <Receipt color="#0c0a09" weight="regular" size={18} />
-                                            Resumo da seu recibo
-                                        </Button>
-                                    </Link>
+                                    <Button variant={"default"} onClick={navigateToShareReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                        <ShareNetwork color="#0c0a09" weight="regular" size={18} />
+                                        Compartilhar recibo
+                                    </Button>
+                                    <Button variant={"default"} onClick={navigateToResumeReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                        <Receipt color="#0c0a09" weight="regular" size={18} />
+                                        Resumo da seu recibo
+                                    </Button>
                                     <Dialog>
                                         <DialogTrigger>
                                             <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
@@ -191,19 +221,35 @@ export default function ReceiptDetails(){
 
                 <div className="flex flex-col gap-2">
                     <p className="text-xl text-black font-semibold">Histórico</p>
-                    {historics?.map((historic) => (
-                        <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
-                            <div className="flex flex-col gap-1">
-                                <p className="text-base text-black font-normal">{historic.nameProduct}</p>
-                                <div className="flex flex-row items-center gap-1">
-                                    <Clock />
-                                    <p className="text-base text-black font-light">{new Date(historic.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                    </p>
+                    {loading ? (
+                        <Card className="mt-2">
+                            <CardContent className="flex flex-row p-2 items-center justify-between">
+                                <div className="flex flex-col p-2 justify-between gap-2">
+                                    <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                                    <div className="flex flex-row items-center justify-between gap-2">
+                                        <Skeleton className="w-[20px] h-[20px] rounded-full" />
+                                        <Skeleton className="w-[60px] h-[10px] rounded-full" />
+                                    </div>
                                 </div>
+                                <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                            </CardContent>
+                        </Card>
+                    ) : historics.length === 0 ? (
+                        <EmptyStateParticipants title={"Participantes"} description={"Nenhum participante adicionou um histórico."}/>
+                    ) : (historics?.map((historic) => (
+                            <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-base text-black font-normal">{historic.nameProduct}</p>
+                                    <div className="flex flex-row items-center gap-1">
+                                        <Clock />
+                                        <p className="text-base text-black font-light">{new Date(historic.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-lg text-black font-semibold">R$ {historic.valueProduct}</p>
                             </div>
-                            <p className="text-lg text-black font-semibold">{parseFloat(historic.valueProduct).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </>
