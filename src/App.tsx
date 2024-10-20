@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: '/shareReceipt/:receiptID?',
+    path: '/shareReceipt',
     element: <ShareReceipt />,
     errorElement: <Error />
   },
