@@ -30,9 +30,10 @@ export async function getOneReceipt(receiptIdParams: String){
 }
 
 export async function getOneReceiptByCode(code: String){
-    const receipts = await axios.get<ReceiptProps>(`${import.meta.env.VITE_API_URL}/searchReceipts/${code}`);
+    const receipts = await axios.get<ReceiptProps>(`${import.meta.env.VITE_API_URL}/searchReceipts?code=${code}`);
     if(receipts != null || undefined){
-        return await receipts.data.receipts
+        console.log(receipts.data)
+        return await receipts.data
     }else{
         return null
     }
