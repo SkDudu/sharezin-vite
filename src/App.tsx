@@ -1,5 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+import SignIn from './pages/auth/signIn/page'
+import SignUp from './pages/auth/signUp/page'
+import ForgotPass from './pages/auth/forgotPass/page'
 import Home from './pages/home/page'
 import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
@@ -15,6 +18,21 @@ import './App.css'
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <SignIn />,
+    errorElement: <Error />
+  },
+  {
+    path: "/signUp",
+    element: <SignUp />,
+    errorElement: <Error />
+  },
+  {
+    path: "/forgotpass",
+    element: <ForgotPass />,
+    errorElement: <Error />
+  },
+  {
+    path: "/home",
     element: <Home />,
     errorElement: <Error />
   },

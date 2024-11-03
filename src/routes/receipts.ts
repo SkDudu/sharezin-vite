@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useCookies } from 'react-cookie'
 
 export interface ReceiptProps {
     receipts: any;
@@ -15,8 +16,15 @@ export interface ReceiptProps {
     userOwner: string
 }
 
-export async function getReceiptsAll() {
-    const receipts = await axios.get<ReceiptProps[]>(`${import.meta.env.VITE_API_URL}/receipts`);
+export async function getReceiptsByUserId() {
+    const [cookies] = useCookies(['accessToken'])
+    const token = cookies.accessToken
+
+    const receipts = await axios.get<ReceiptProps[]>(`${import.meta.env.VITE_API_URL}/receipts`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
     return receipts.data;
 }
 

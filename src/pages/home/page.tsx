@@ -10,21 +10,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Receipt } from "@phosphor-icons/react";
 
-import { getReceiptsAll, ReceiptProps } from "@/routes/receipts";
+import { getReceiptsByUserId, ReceiptProps } from "@/routes/receipts";
 
 import imgUrl from '../../assets/nodata.svg'
 
 export default function Home() {
-    const myUserId = "c692360d-2716-428e-99fc-12f67045736c"
     const [receipts, setReceipts] = useState<ReceiptProps[]>([])
     const [closeReceipts, setCloseReceipts] = useState<ReceiptProps[]>([])
     const [loading, setLoading] = useState(true)
 
     async function responseGetAllReceipts(){
-        const response = await getReceiptsAll()
+        const response = await getReceiptsByUserId()
 
         if(response != null){
-            const responsefilterReceiptsForUserOwner = response.filter(receipt => receipt.userOwner === myUserId);
+            const responsefilterReceiptsForUserOwner = response.filter(receipt => receipt.userOwner === 'ddd');
             const responsefilterReceiptsForIsCloseFalse = responsefilterReceiptsForUserOwner.filter(receipt => receipt.isClose === false)
             const responsefilterReceiptsForIsCloseTrue = responsefilterReceiptsForUserOwner.filter(receipt => receipt.isClose === true)
             setLoading(false)
@@ -82,7 +81,7 @@ export default function Home() {
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.restaurant_name}</p>
                                     <div className="flex flex-row mt-2">
-                                        {receipt.userOwner === myUserId ? 
+                                        {receipt.userOwner === 'abc' ? 
                                             <Badge variant={"default"} className="bg-blue-500">
                                                 <p className="text-blue-100">Dono</p>
                                             </Badge>

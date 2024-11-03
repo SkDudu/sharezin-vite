@@ -1,11 +1,33 @@
-import { House, List, MagnifyingGlass, X } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { Link, useNavigate } from "react-router-dom";
+
+import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react";
+
+import { logout } from "@/routes/user";
 
 export default function Header() {
     const navigate = useNavigate()
+
+    async function logoff(){
+        try{
+            const response = await logout()
+            if(response == true){
+                const [, , removeCookie] = useCookies(['accessToken'])
+                removeCookie('accessToken', { path: '/' })
+            }
+
+            console.log(response)
+        }catch(error){
+            toast.error('Erro efetuar o logout, tente novamente.')
+        }
+        
+    }
+
     return(
         <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row gap-2">
@@ -41,10 +63,16 @@ export default function Header() {
                                 </div>
                             </SheetTitle>
                         </SheetHeader>
-                        <SheetDescription className="mt-6">
-                            <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
-                                <House color="#0c0a09" weight="regular" size={18} />
-                                Home
+                        <SheetDescription className="flex flex-col gap-4">
+                            <div>
+                                <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
+                                    <House color="#0c0a09" weight="regular" size={18} />
+                                    Home
+                                </Button>
+                            </div>
+                            <Button variant={"default"} onClick={logoff} className="w-full justify-start bg-red-500 text-stone-100 gap-3 hover:bg-red-600">
+                                <SignOut size={18} weight="bold"/>
+                                Sair
                             </Button>
                         </SheetDescription>
                     </SheetContent>
