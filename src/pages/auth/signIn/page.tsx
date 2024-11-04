@@ -18,7 +18,7 @@ export default function signIn(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const [cookies, setCookie] = useCookies(['acessToken'])
+    const [ , setCookie] = useCookies(['acessToken'])
 
     function handleEmailChange(event: any) {
         const { value } = event.target;
