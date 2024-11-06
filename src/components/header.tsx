@@ -1,31 +1,23 @@
-import toast from "react-hot-toast";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"
+import { Link, useNavigate } from "react-router-dom"
 
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Button } from "./ui/button"
 
-import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react";
-
-import { logout } from "@/routes/user";
+import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react"
+import { logout } from "@/routes/user"
 
 export default function Header() {
     const navigate = useNavigate()
 
     async function logoff(){
-        try{
-            const response = await logout()
-            if(response == true){
-                const [, , removeCookie] = useCookies(['accessToken'])
-                removeCookie('accessToken', { path: '/' })
-            }
+        const response = await logout()
+        console.log(response)
 
-            console.log(response)
-        }catch(error){
+        if(!response){
             toast.error('Erro efetuar o logout, tente novamente.')
         }
-        
     }
 
     return(
@@ -55,7 +47,7 @@ export default function Header() {
                     <SheetContent>
                         <SheetHeader>
                             <SheetTitle className="flex justify-start">
-                                <div className="flex flex-row w-full justify-between items-center">
+                                <div className="flex flex-row w-full justify-between items-center pb-2">
                                     Menu
                                     <SheetClose>
                                         <X size={24} />
@@ -65,7 +57,7 @@ export default function Header() {
                         </SheetHeader>
                         <SheetDescription className="flex flex-col gap-4">
                             <div>
-                                <Button variant={"default"} onClick={()=>{navigate('/')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
+                                <Button variant={"default"} onClick={()=>{navigate('/home')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
                                     <House color="#0c0a09" weight="regular" size={18} />
                                     Home
                                 </Button>

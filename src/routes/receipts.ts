@@ -17,15 +17,15 @@ export interface ReceiptProps {
 }
 
 export async function getReceiptsByUserId() {
-    const [cookies] = useCookies(['accessToken'])
-    const token = cookies.accessToken
+    const [cookies] = useCookies(['acessToken'])
+    const token = cookies.acessToken
 
     const receipts = await axios.get<ReceiptProps[]>(`${import.meta.env.VITE_API_URL}/receipts`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
     })
-    return receipts.data;
+    return receipts.data
 }
 
 export async function getOneReceipt(receiptIdParams: String){

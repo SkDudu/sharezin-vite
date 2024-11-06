@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useCookies } from 'react-cookie';
 
 export interface UserProps {
     name: string
@@ -7,8 +8,8 @@ export interface UserProps {
 }
 
 export interface UserLoginProps {
-    userId: any;
-    acessToken: any;
+    userId: string;
+    acessToken: string;
 }
 
 export async function createUser(name: string, email: string, password: string){
@@ -28,7 +29,15 @@ export async function login(email: string, password: string){
 }
 
 export async function logout(){
-    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/logout`)
+    const [cookies] = useCookies(['acessToken'])
+    const token = cookies.acessToken
+
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/logout`,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
     if(response.data.message == 'Logout successful'){
         return true
     }else{
