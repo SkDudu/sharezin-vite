@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import logo from "@/assets/Logo-asset.png"
-import { createUser } from "@/routes/user"
 
 export default function signUp(){
     const navigate = useNavigate()
