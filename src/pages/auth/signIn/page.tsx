@@ -1,15 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import PocketBase from 'pocketbase'
 
-import { useCookies } from 'react-cookie'
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import { login } from "@/routes/user";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 import logo from "@/assets/Logo-asset.png"
 
@@ -18,7 +14,7 @@ export default function signIn(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const [ , setCookie] = useCookies(['acessToken'])
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     function handleEmailChange(event: any) {
         const { value } = event.target;
@@ -39,24 +35,17 @@ export default function signIn(){
     }
 
     async function actionSignIn(){
-        try{
-            const response = await login(
-                email,
-                password
-            )
+        const identity = email
 
-            if(response != null){
-                const date = new Date();
-                date.setDate(date.getDate() + 30)
-                setCookie('acessToken', response.data.acessToken, {
-                    secure: true,
-                    expires: date
-                })
-                navigate('/home')
+        const response = await pb.collection('users').authWithPassword(identity, password)
+        
+        navigate('/home', {
+            state: {
+                data: {
+                    userId: response.record.id
+                }
             }
-        }catch(error){
-            toast.error('Erro ao efetuar o login, tente novamente.')
-        }
+        })
     }
 
     return (

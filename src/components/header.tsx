@@ -1,23 +1,21 @@
 import toast from "react-hot-toast"
 import { Link, useNavigate } from "react-router-dom"
+import PocketBase from 'pocketbase'
 
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
 
 import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react"
-import { logout } from "@/routes/user"
 
 export default function Header() {
     const navigate = useNavigate()
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     async function logoff(){
-        const response = await logout()
-        console.log(response)
-
-        if(!response){
-            toast.error('Erro efetuar o logout, tente novamente.')
-        }
+        pb.authStore.clear()
+        toast.success('Logout efetuado com sucesso.')
+        navigate('/')
     }
 
     return(

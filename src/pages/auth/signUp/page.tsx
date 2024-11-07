@@ -1,17 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+import PocketBase from 'pocketbase'
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 import logo from "@/assets/Logo-asset.png"
-import { createUser } from "@/routes/user";
+import { createUser } from "@/routes/user"
 
 export default function signUp(){
     const navigate = useNavigate()
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
+
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -86,12 +89,12 @@ export default function signUp(){
     }
 
     async function actionSignUp(){
+        const username = name
+        const data={
+            name, email, password, passwordConfirm, username
+        }
         if(validate()){
-            const response = await createUser(
-                name,
-                email,
-                password
-            )
+            const response = await pb.collection('users').create(data)
 
             if(response != null){
                 toast.success('Conta criada com sucesso!')
