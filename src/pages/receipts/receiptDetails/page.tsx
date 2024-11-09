@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import PocketBase, { RecordModel } from 'pocketbase'
@@ -20,21 +20,44 @@ export default function ReceiptDetails(){
 
     const [receipt, setReceipt] = useState<RecordModel | null>()
     const [historics, setHistorics] = useState<RecordModel[] | null>(null)
+    const [participant, setParticipant] = useState<RecordModel[] | null>()
     const [loading, setLoading] = useState(true)
     const [cancelReceipt, setCancelReceipt] = useState(false)
+    const [valueTotal, setValueTotal] = useState(0)
+
+    const [isClosed, setIsCLosed] = useState(false)
 
     async function responseGetOneReceipt(){
         const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
             expand: 'user'
         })
 
+        const responsePart = await pb.collection('participants').getFullList({
+            filter: `receiptId="${receiptIdParams}" && user ="${userId}"`
+        })
+
+        if(responsePart){
+            setParticipant(responsePart)
+        }
+
         const responseHistoric = await pb.collection('costs').getFullList({
             filter: `receiptId="${receiptIdParams}"`,
             sort: '-created'
         })
 
+        const totalCost = responseHistoric.reduce((sum, item) => {
+            return sum + parseFloat(item.cost || 0)
+        }, 0)
+
+        setValueTotal(totalCost)
+
         if(response != null){
             setReceipt(response)
+            if(response.isClosed == true){
+                setIsCLosed(true)
+            }else{
+                setIsCLosed(false)
+            }
         }else{
             toast.error('Esse recibo não existe.')
         }
@@ -50,21 +73,38 @@ export default function ReceiptDetails(){
         }
     }
 
+    const participantId = participant?.map(participant => participant.id)
+    const costTotalParticipant = participant?.map(participant => participant.totalCost)
+
     async function closedMyParticipant(){
         const data={
             isClosed: true
         }
-        const responseGetParticipant = await pb.collection('participants').getFullList({
-            filter: `receiptId="${receiptIdParams}" && user ="${userId}"`
-        })
-        const id = responseGetParticipant[0].id
-        const response = await pb.collection('participants').update(`${id}`, data)
+
+        const response = await pb.collection('participants').update(`${participantId}`, data)
 
         if(response){
             navigate(`/receiptDetails/${receiptIdParams}`)
             toast.success('Recibo fechado com sucesso.')
         }else{
             toast.error('Erro ao tentar fechar o seu recibo, tente novamente.')
+        }
+    }
+
+    const myValueParticipant = costTotalParticipant?.[0] + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
+    const myValueReceipt = valueTotal + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
+
+    async function closedMyRecipt(){
+        const data={
+            isClosed: true
+        }
+        const responseReceipt = await pb.collection('receipts').update(`${receiptIdParams}`, data)
+
+        if(responseReceipt){
+            navigate(`/receiptDetails/${receiptIdParams}`)
+            toast.success('Recibo fechado com sucesso.')
+        }else{
+            toast.error('Erro ao tentar fechar o recibo, tente novamente.')
         }
     }
 
@@ -98,7 +138,9 @@ export default function ReceiptDetails(){
         navigate('/addValueInReceipt', {
             state: {
                 data: {
-                    receiptId: receiptIdParams
+                    receiptId: receiptIdParams,
+                    participantId: participantId,
+                    TotalCost: costTotalParticipant
                 }
             }
         })
@@ -127,14 +169,26 @@ export default function ReceiptDetails(){
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-col">
-                            <p className="text-xl text-black font-semibold">{receipt?.title}</p>
-                            <p className="text-base text-black font-light">Responsável: {receipt?.expand?.user.name}</p>
+                            {loading ? (
+                                <Skeleton className="w-[60px] h-[25px] rounded-full mb-2" />
+                            ) : (
+                                <p className="text-xl text-black font-semibold">{receipt?.title}</p>
+                            )}
+                            {loading ? (
+                                <Skeleton className="w-[100px] h-[20px] rounded-full" />
+                            ) : (
+                                <p className="text-base text-black font-light">Responsável: {receipt?.expand?.user.name}</p>
+                            )}
                         </div>
                         <Sheet>
                             <SheetTrigger>
-                                <Button className="w-10 h-10 p-0 bg-blue-100 rounded-full hover:bg-blue-100">
-                                    <DotsThreeVertical size={24} color="#172554"/>
-                                </Button>
+                                {isClosed == false ? (
+                                    <Button className="w-10 h-10 p-0 bg-blue-100 rounded-full hover:bg-blue-100">
+                                        <DotsThreeVertical size={24} color="#172554"/>
+                                    </Button>
+                                ):(
+                                    <></>
+                                )}
                             </SheetTrigger>
                             <SheetContent side={"bottom"} className="rounded-t-md">
                                 <SheetHeader className="flex items-start">
@@ -194,9 +248,7 @@ export default function ReceiptDetails(){
                                                 <DialogClose className="w-full">
                                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                                 </DialogClose>
-                                                <Link to={'/'} className="w-full">
-                                                    <Button variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
-                                                </Link>
+                                                <Button onClick={closedMyRecipt} variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
                                             </div>
                                         </DialogContent>
                                     </Dialog>
@@ -208,20 +260,24 @@ export default function ReceiptDetails(){
 
                     <div className="flex flex-col items-center">
                         <p className="text-base text-black font-light">Seu consumo total</p>
-                        <p className="text-4xl text-black font-semibold">R$ 34,32</p>
+                        <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueParticipant)}</p>
                     </div>
 
-                    <Button onClick={navigateToAddCostInReceipt}>
-                        <Plus size={18} weight="bold"/>
-                        <p className="text-base text-white font-light pl-2">Adicionar valor</p>
-                    </Button>
+                    {isClosed == false ? (
+                        <Button onClick={navigateToAddCostInReceipt}>
+                            <Plus size={18} weight="bold"/>
+                            <p className="text-base text-white font-light pl-2">Adicionar valor</p>
+                        </Button>
+                    ):(
+                        <></>
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-2">
                     <p className="text-xl text-black font-semibold">Informações gerais do recibo</p>
                     <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 items-center border">
                         <p className="text-base text-black font-light">Custo total do recibo compartilhado</p>
-                        <p className="text-4xl text-black font-medium">R$ 34,32</p>
+                        <p className="text-4xl text-black font-medium">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueReceipt)}</p>
                     </div>
                     <div className="flex flex-row gap-2">
                         <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
@@ -229,14 +285,22 @@ export default function ReceiptDetails(){
                                 <Percent />
                                 <p className="text-base text-black font-light">Taxa do garçom</p>
                             </div>
-                            <p className="text-xl text-black font-medium">{receipt?.tax_service}%</p>
+                            {loading ? (
+                                <Skeleton className="w-[100px] h-[26px] rounded-full" />
+                            ) : (
+                                <p className="text-xl text-black font-medium">{receipt?.tax_service}%</p>
+                            )}
                         </div>
                         <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
                             <div className="flex flex-row items-center gap-1">
                                 <MicrophoneStage />
                                 <p className="text-base text-black font-light">Taxa do cover</p>
                             </div>
-                            <p className="text-xl text-black font-medium">R$ {receipt?.tax_cover},00</p>
+                            {loading ? (
+                                <Skeleton className="w-[100px] h-[26px] rounded-full" />
+                            ) : (
+                                <p className="text-xl text-black font-medium">R$ {receipt?.tax_cover},00</p>
+                            )}
                         </div>
                     </div>
                 </div>
