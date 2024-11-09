@@ -82,10 +82,10 @@ export default function Home() {
                             </div>
                         </CardContent>
                     </Card>
-                ) : receipts == null ? (
-                    <EmptyState path={imgUrl} title={'Sem recibos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
+                ) : receipts?.totalItems == 0 ? (
+                    <EmptyState path={imgUrl} title={'Sem recibos abertos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
                 ) : (
-                    receipts.items.map((receipt)=>(
+                    receipts?.items.map((receipt)=>(
                         <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
                             <Card className="mb-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
@@ -131,15 +131,15 @@ export default function Home() {
                             </div>
                         </CardContent>
                     </Card>
-                ) : closeReceipts == null ? (
+                ) : closeReceipts?.totalItems == 0 ? (
                     <EmptyState path={imgUrl} title={'Sem recibos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
                 ) : (
-                    closeReceipts.items.map((receipt)=>(
-                        <Link key={receipt.id} to={`/receiptDetails/${userId}`}>
+                    closeReceipts?.items.map((receipt)=>(
+                        <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
                             <Card className="mb-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
-                                    <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
-                                        <Receipt color="#3b82f6" weight="fill" size={32} />
+                                    <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-slate-100">
+                                        <Receipt color="#64748b" weight="fill" size={32} />
                                     </div>
                                     {receipt.isClosed == false ? <Badge variant={"default"} className="h-6 bg-green-500">Aberta</Badge> : <Badge variant={"default"} className="h-6 bg-stone-500">Fechada</Badge>}
                                 </CardHeader>
@@ -147,17 +147,9 @@ export default function Home() {
                                     <p className="font-semibold">{receipt.title}</p>
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.place}</p>
-                                    <div className="flex flex-row mt-2">
-                                        {receipt.ownerId === userId ? 
-                                            <Badge variant={"default"} className="bg-blue-500">
-                                                <p className="text-blue-100">Dono</p>
-                                            </Badge>
-                                        :
-                                            <Badge variant={"default"} className="bg-blue-100">
-                                                <p className="text-blue-500">Convidado</p>
-                                            </Badge> 
-                                        }
-                                    </div>
+                                    <Badge variant={"default"} className="bg-slate-300 max-w-[190px]">
+                                        <p className="text-slate-500">Fechado em: {new Date(receipt.created).toLocaleDateString('pt-BR')}, {new Date(receipt.created).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</p>
+                                    </Badge>
                                 </CardContent>
                             </Card>
                         </Link>
