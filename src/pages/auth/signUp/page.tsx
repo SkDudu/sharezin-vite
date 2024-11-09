@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { LoadingButton } from "@/components/button"
 
 import logo from "@/assets/Logo-asset.png"
 
 export default function signUp(){
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     const [name, setName] = useState('')
@@ -21,23 +23,23 @@ export default function signUp(){
     const [errors, setErrors] = useState({ name: '', email: '', password: '', passwordConfirm: ''})
 
     function handleNameChange(event: any) {
-        const { value } = event.target;
-        setName(value);
+        const { value } = event.target
+        setName(value)
     }
 
     function handleEmailChange(event: any) {
-        const { value } = event.target;
-        setEmail(value);
+        const { value } = event.target
+        setEmail(value)
     }
 
     function handlePasswordChange(event: any) {
-        const { value } = event.target;
-        setPassword(value);
+        const { value } = event.target
+        setPassword(value)
     }
 
     function handlePassworConfirmChange(event: any) {
-        const { value } = event.target;
-        setPasswordConfirm(value);
+        const { value } = event.target
+        setPasswordConfirm(value)
     }
 
     function navSignIn(){
@@ -87,20 +89,34 @@ export default function signUp(){
         return isValid
     }
 
-    async function actionSignUp(){
-        const username = name
-        const data={
-            name, email, password, passwordConfirm, username
-        }
-        if(validate()){
-            const response = await pb.collection('users').create(data)
-
-            if(response != null){
-                toast.success('Conta criada com sucesso!')
-                navigate('/')
+    async function actionSignUp() {
+        const username = name;
+        const data = { name, email, password, passwordConfirm, username };
+    
+        if (validate()) {
+            setLoading(true);
+    
+            try {
+                const response = await pb.collection('users').create(data);
+    
+                if (response != null) {
+                    toast.success('Conta criada com sucesso!');
+                    navigate('/');
+                } else {
+                    setLoading(false);
+                    toast.error('Erro ao criar sua conta, tente novamente.');
+                }
+            } catch (error: any) {
+                setLoading(false);
+                if(error.data.data.email.message = 'The email is invalid or already in use.'){
+                    toast.error('E-mail inválido ou já em uso.')
+                }
+                if(error.data.data.username.message = 'The username is invalid or already in use.'){
+                    toast.error('Nome inválido ou já em uso.')
+                }
             }
-        }else{
-            toast.error('Formulário preenchido errado.')
+        } else {
+            toast.error('Formulário preenchido incorretamente.');
         }
     }
 
@@ -136,9 +152,9 @@ export default function signUp(){
                             <Input type="password" value={passwordConfirm} onChange={handlePassworConfirmChange}/>
                             {errors.passwordConfirm && <p style={{ color: 'red' }}>{errors.passwordConfirm}</p>}
                         </div>
-                        <Button onClick={actionSignUp} variant={"default"} className="w-full">
-                            <p className="font-normal">Criar conta</p>
-                        </Button>
+                        <LoadingButton onClick={actionSignUp} variant={"default"} loading={loading}>
+                            Criar conta
+                        </LoadingButton>
                         <Button onClick={navSignIn} variant={"ghost"} className="w-full p-0 hover:bg-transparent">
                             <p className="font-normal underline">Lembrei da minha conta</p>
                         </Button>

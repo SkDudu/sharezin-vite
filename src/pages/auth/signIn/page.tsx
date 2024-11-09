@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 import PocketBase from 'pocketbase'
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { LoadingButton } from "@/components/button"
 
 import logo from "@/assets/Logo-asset.png"
 
@@ -13,6 +15,7 @@ export default function signIn(){
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
@@ -35,14 +38,25 @@ export default function signIn(){
     }
 
     async function actionSignIn(){
+        setLoading(true)
         const identity = email
 
-        const response = await pb.collection('users').authWithPassword(identity, password)
-
-        localStorage.clear()
-        localStorage.setItem("userId", JSON.stringify(response.record.id))
-        
-        navigate('/home')
+        try {
+            const response = await pb.collection('users').authWithPassword(identity, password)
+    
+            if (response != null) {
+                localStorage.clear()
+                localStorage.setItem("userId", JSON.stringify(response.record.id))
+                setLoading(false)
+                navigate('/home')
+            } else {
+                setLoading(false)
+                toast.error('Erro ao tentar fazer o login.')
+            }
+        } catch (error) {
+            setLoading(false)
+            toast.error('Erro ao tentar fazer o login. Por favor, verifique suas credenciais e tente novamente.');
+        }
     }
 
     return (
@@ -68,9 +82,9 @@ export default function signIn(){
                         <Button onClick={navForgotpass} variant={"ghost"} className="w-full justify-start p-0 hover:bg-transparent">
                             <p className="font-normal underline">Esqueci minha senha</p>
                         </Button>
-                        <Button onClick={actionSignIn} variant={"default"} className="w-full">
-                            <p className="font-normal">Entrar</p>
-                        </Button>
+                        <LoadingButton onClick={actionSignIn} variant={"default"} loading={loading}>
+                            Entrar
+                        </LoadingButton>
                         <Button onClick={navSignUp} variant={"ghost"} className="w-full justify-start p-0 hover:bg-transparent">
                             <p className="font-normal underline">Criar uma conta</p>
                         </Button>
