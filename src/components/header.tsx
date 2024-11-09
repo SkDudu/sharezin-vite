@@ -8,12 +8,17 @@ import { Button } from "./ui/button"
 
 import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react"
 
-export default function Header() {
+interface headerProps {
+    title: String
+}
+
+export default function Header(props: headerProps) {
     const navigate = useNavigate()
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     async function logoff(){
         pb.authStore.clear()
+        localStorage.clear()
         toast.success('Logout efetuado com sucesso.')
         navigate('/')
     }
@@ -29,7 +34,7 @@ export default function Header() {
                 </div>
                 <div className="flex flex-col">
                     <p className="text-sm font-light text-stone-600">Bem vindo!</p>
-                    <p className="text-base font-semibold text-stone-950">Eduardo Santos</p>
+                    <p className="text-base font-semibold text-stone-950">{props.title}</p>
                 </div>
             </div>
 
