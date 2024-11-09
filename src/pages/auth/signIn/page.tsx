@@ -38,14 +38,11 @@ export default function signIn(){
         const identity = email
 
         const response = await pb.collection('users').authWithPassword(identity, password)
+
+        localStorage.clear()
+        localStorage.setItem("userId", JSON.stringify(response.record.id))
         
-        navigate('/home', {
-            state: {
-                data: {
-                    userId: response.record.id
-                }
-            }
-        })
+        navigate('/home')
     }
 
     return (
