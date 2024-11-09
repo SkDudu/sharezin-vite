@@ -1,39 +1,72 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { useState } from "react"
+import toast from "react-hot-toast"
+import PocketBase, { RecordModel } from 'pocketbase'
+import { useNavigate } from "react-router-dom"
 
-import HeaderWithBack from "@/components/headerWithBack";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import HeaderWithBack from "@/components/headerWithBack"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
-import { Receipt } from "@phosphor-icons/react";
-
-import { getOneReceiptByCode, ReceiptProps } from "@/routes/receipts";
+import { Receipt } from "@phosphor-icons/react"
 
 export default function searchReceipts(){
-    const [codeField, setCodeField] = useState('');
-    const [receipts, setReceipts] = useState<ReceiptProps[] | undefined>([])
+    const navigate = useNavigate()
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
+    const userId = JSON.parse(localStorage.getItem("userId") as string)
+
+    const [codeField, setCodeField] = useState('')
+    const [receipts, setReceipts] = useState<RecordModel[]>([])
     const [loading, setLoading] = useState(false)
 
     async function getReceiptByCode(){
         setLoading(true);
-        const response = await getOneReceiptByCode(codeField)
-
+        const response = await pb.collection('receipts').getFirstListItem(`code_invitation="${codeField}"`)
         if(response != null){
             setReceipts([response])
         } else {
-            toast.error('Não existe recibos com esse código, digite um código válido.');
-            setReceipts(undefined)
+            toast.error('Não existe recibos com esse código, digite um código válido.')
         }
         setLoading(false)
     }
 
+    async function getInsideOfReceipt(){
+        const userOwner = receipts.map((receipt) => receipt?.user)
+        const receipt = receipts.map((receipt) => receipt?.id)
+        
+        const responseGetParticipant = await pb.collection('participants').getFullList({
+            filter: `receiptId="${receipt}" && user ="${userId}"`
+        })
+
+        const firstUser = responseGetParticipant[0]?.user
+
+        if(userOwner == userId){
+            toast.error('Já sou dono desse recibo.')
+        }else if(firstUser == undefined){
+            const data={
+                user: userId,
+                totalCost: 0,
+                receiptId: receipt
+            }
+
+            const responseParticipant = await pb.collection('participants').create(data)
+            if(responseParticipant != null){
+                toast.success('Entrada no recibo feita com sucesso!')
+                navigate(`/receiptDetails/${receipt}`)
+            }else{
+                toast.error('Erro ao entrar no recibo, tente novamente.')
+            }
+
+        }else if(userId == firstUser){
+            toast.error('já é participante desse recibo.')
+        }
+    }
+
     function handleCodeChange(event: any) {
-        const { value } = event.target;
-        setCodeField(value);
+        const { value } = event.target
+        setCodeField(value)
     }
 
     return(
@@ -58,22 +91,20 @@ export default function searchReceipts(){
                             </div>
                         </CardContent>
                     </Card>
-                ) : (receipts?.map((receipt: ReceiptProps) => (
-                        <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
-                            <Card className="mb-2">
-                                <CardHeader className="flex flex-row p-2 justify-between">
-                                    <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
-                                        <Receipt color="#3b82f6" weight="fill" size={32} />
-                                    </div>
-                                    {receipt.isClose == false ? <Badge variant={"default"} className="h-6 bg-green-500">Aberta</Badge> : <Badge variant={"default"} className="h-6 bg-stone-500">Fechada</Badge>}
-                                </CardHeader>
-                                <CardContent className="flex flex-col px-2 pb-2 gap-2">
-                                    <p className="font-semibold">{receipt.title}</p>
-                                    <p>{receipt.description}</p>
-                                    <p className="font-thin">Restaurante: {receipt.restaurant_name}</p>
-                                </CardContent>
-                            </Card>
-                        </Link>
+                ) : (receipts?.map((receipt) => (
+                    <Card key={receipt.id} className="mb-2" onClick={getInsideOfReceipt}>
+                        <CardHeader className="flex flex-row p-2 justify-between">
+                            <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
+                                <Receipt color="#3b82f6" weight="fill" size={32} />
+                            </div>
+                            {receipt.isClosed == false ? <Badge variant={"default"} className="h-6 bg-green-500">Aberta</Badge> : <Badge variant={"default"} className="h-6 bg-stone-500">Fechada</Badge>}
+                        </CardHeader>
+                        <CardContent className="flex flex-col px-2 pb-2 gap-2">
+                            <p className="font-semibold">{receipt.title}</p>
+                            <p>{receipt.description}</p>
+                            <p className="font-thin">Restaurante: {receipt.place}</p>
+                        </CardContent>
+                    </Card>
                     ))
                 )}
             </div>

@@ -30,10 +30,10 @@ export default function createReceitp(){
     const tax_cover = coverField
     const tax_service = serviceField
     const code_invitation: string = generateRandomCode(8)
-    const ownerId = userId as string
+    const user = userId as string
 
     const dataReceipt = {
-        title, description, place, tax_cover, tax_service, code_invitation, ownerId
+        title, description, place, tax_cover, tax_service, code_invitation, user
     }
 
     async function actionCreateReceitp(){
@@ -41,6 +41,13 @@ export default function createReceitp(){
             const response = await pb.collection('receipts').create(dataReceipt)
             
             if(response != null){
+                const data={
+                    user: userId,
+                    totalCost: 0,
+                    receiptId: response.id
+                }
+    
+                await pb.collection('participants').create(data)
                 toast.success('Recibo criado com sucesso.')
                 navigate('/home')
             }

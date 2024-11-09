@@ -5,29 +5,66 @@ import PocketBase, { RecordModel } from 'pocketbase'
 
 import HeaderWithBack from "@/components/headerWithBack"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import {  DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {  Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import EmptyStateParticipants from "@/components/emptyStateParticipants"
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
+    const userId = JSON.parse(localStorage.getItem("userId") as string)
 
     const [receipt, setReceipt] = useState<RecordModel | null>()
-    //const [historics, setHistorics] = useState<HistoricProps[]>([])
-    //const [loading, setLoading] = useState(true)
+    const [historics, setHistorics] = useState<RecordModel[] | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [cancelReceipt, setCancelReceipt] = useState(false)
 
     async function responseGetOneReceipt(){
         const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
-            expand: 'ownerId'
+            expand: 'user'
         })
 
-        console.log(response)
+        const responseHistoric = await pb.collection('costs').getFullList({
+            filter: `receiptId="${receiptIdParams}"`,
+            sort: '-created'
+        })
+
         if(response != null){
             setReceipt(response)
         }else{
             toast.error('Esse recibo não existe.')
+        }
+
+        if(response != null){
+            setHistorics(responseHistoric)
+            setLoading(false)
+            if(response.user == userId){
+                setCancelReceipt(true)
+            }
+        }else{
+            toast.error('Sem histótico.')
+        }
+    }
+
+    async function closedMyParticipant(){
+        const data={
+            isClosed: true
+        }
+        const responseGetParticipant = await pb.collection('participants').getFullList({
+            filter: `receiptId="${receiptIdParams}" && user ="${userId}"`
+        })
+        const id = responseGetParticipant[0].id
+        const response = await pb.collection('participants').update(`${id}`, data)
+
+        if(response){
+            navigate(`/receiptDetails/${receiptIdParams}`)
+            toast.success('Recibo fechado com sucesso.')
+        }else{
+            toast.error('Erro ao tentar fechar o seu recibo, tente novamente.')
         }
     }
 
@@ -38,7 +75,7 @@ export default function ReceiptDetails(){
                     id: receipt?.id,
                     title: receipt?.title,
                     description: receipt?.description,
-                    restaurant_name: receipt?.restaurant_name,
+                    place: receipt?.place,
                     tax_service: Number(receipt?.tax_service),
                     tax_cover: Number(receipt?.tax_cover)
                 }
@@ -61,7 +98,6 @@ export default function ReceiptDetails(){
         navigate('/addValueInReceipt', {
             state: {
                 data: {
-                    userId: 'c692360d-2716-428e-99fc-12f67045736c',
                     receiptId: receiptIdParams
                 }
             }
@@ -74,7 +110,7 @@ export default function ReceiptDetails(){
                 data: {
                     id: receipt?.id,
                     title: receipt?.title,
-                    restaurant_name: receipt?.restaurant_name
+                    place: receipt?.place
                 }
             }
         })
@@ -92,7 +128,7 @@ export default function ReceiptDetails(){
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-col">
                             <p className="text-xl text-black font-semibold">{receipt?.title}</p>
-                            <p className="text-base text-black font-light">Responsável: {receipt?.ownerId}</p>
+                            <p className="text-base text-black font-light">Responsável: {receipt?.expand?.user.name}</p>
                         </div>
                         <Sheet>
                             <SheetTrigger>
@@ -121,7 +157,7 @@ export default function ReceiptDetails(){
                                         <DialogTrigger>
                                             <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
                                                 <X color="#ef4444" weight="regular" size={18} />
-                                                Encerrar seu recibo compartilhado
+                                                Encerrar sua parte do recibo compartilhado
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent className="w-[70%] rounded">
@@ -135,17 +171,16 @@ export default function ReceiptDetails(){
                                                 <DialogClose className="w-full">
                                                     <Button variant={"secondary"} className="w-full">Não</Button>
                                                 </DialogClose>
-                                                <Link to={'/'} className="w-full">
-                                                    <Button variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
-                                                </Link>
+                                                <Button onClick={closedMyParticipant} variant={"default"} className="w-full bg-red-500 hover:bg-red-400">Encerrar</Button>
                                             </div>
                                         </DialogContent>
                                     </Dialog>
-                                    <Dialog>
+                                    {cancelReceipt == true ? (
+                                        <Dialog>
                                         <DialogTrigger>
                                             <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
                                                 <X color="#ef4444" weight="regular" size={18} />
-                                                Encerrar recibo compartilhado
+                                                Fechar todo o recibo compartilhado
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent className="w-[70%] rounded">
@@ -165,6 +200,7 @@ export default function ReceiptDetails(){
                                             </div>
                                         </DialogContent>
                                     </Dialog>
+                                    ):(<></>)}
                                 </div>
                             </SheetContent>
                         </Sheet>
@@ -207,7 +243,36 @@ export default function ReceiptDetails(){
 
                 <div className="flex flex-col gap-2">
                     <p className="text-xl text-black font-semibold">Histórico</p>
-
+                    {
+                        loading ? (
+                            <Card className="mt-2">
+                                <CardContent className="flex flex-row p-2 items-center justify-between">
+                                    <div className="flex flex-col p-2 justify-between gap-2">
+                                        <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                                        <div className="flex flex-row items-center justify-between gap-2">
+                                            <Skeleton className="w-[20px] h-[20px] rounded-full" />
+                                            <Skeleton className="w-[60px] h-[10px] rounded-full" />
+                                        </div>
+                                    </div>
+                                    <Skeleton className="w-[60px] h-[20px] rounded-full" />
+                                </CardContent>
+                            </Card>
+                        ) : historics?.length === 0 ? (
+                            <EmptyStateParticipants title={"Participantes"} description={"Nenhum participante adicionou um histórico."}/>
+                        ) : (historics?.map((historic) => (
+                            <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-base text-black font-normal">{historic.name}</p>
+                                    <div className="flex flex-row items-center gap-1">
+                                        <Clock />
+                                        <p className="text-base text-black font-light">{new Date(historic.created).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-lg text-black font-semibold">R$ {historic.cost}</p>
+                            </div>
+                        )))
+                    }
                 </div>
             </div>
         </>

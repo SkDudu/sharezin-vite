@@ -26,11 +26,11 @@ export default function Home() {
 
     async function responseGetAllReceipts(){
         const receiptsOpen = await pb.collection('receipts').getList(1, 25, {
-            filter: `ownerId = "${userId}" && isClosed = false`
+            filter: `user = "${userId}" && isClosed = false`
         })
 
         const receiptsClosed = await pb.collection('receipts').getList(1, 25, {
-            filter: `ownerId = "${userId}" && isClosed = true`
+            filter: `user = "${userId}" && isClosed = true`
         })
 
         if(receiptsOpen.items.length == 0){
@@ -56,11 +56,11 @@ export default function Home() {
 
     useEffect(()=>{
         responseGetAllReceipts()
-    },[])
+    },[userId])
 
     return (
         <div className="flex flex-col p-4 gap-2 w-screen h-screen">
-            <Header />
+            <Header title={userId}/>
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>
@@ -99,7 +99,7 @@ export default function Home() {
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.place}</p>
                                     <div className="flex flex-row mt-2">
-                                        {receipt.ownerId === userId ? 
+                                        {receipt.user === userId ? 
                                             <Badge variant={"default"} className="bg-blue-500">
                                                 <p className="text-blue-100">Dono</p>
                                             </Badge>

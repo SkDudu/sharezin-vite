@@ -1,38 +1,32 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
+import toast from 'react-hot-toast'
+import PocketBase from 'pocketbase'
 
-import HeaderWithBack from "@/components/headerWithBack";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
-import { updateReceipt } from "@/routes/receipts";
+import HeaderWithBack from "@/components/headerWithBack"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export default function editReceitp(){
     const location = useLocation()
     const { data } = location.state || {}
 
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
+
     const [form, setForm] = useState({
         id: data.id,
         title: '',
         description: '',
-        restaurant_name: '',
+        place: '',
         tax_service: 0,
         tax_cover: 0
-    });
+    })
 
     async function actionEditReceipt(){
         try{
-            const response = await updateReceipt(
-                form.id,
-                form.title,
-                form.description,
-                form.restaurant_name,
-                form.tax_cover,
-                form.tax_service
-            )
+            const response = await pb.collection('receipts').update(`${data.id}`, form)
             
             if(response != null){
                 toast.success('Recibo editado com sucesso.')
@@ -81,7 +75,7 @@ export default function editReceitp(){
 
     return(
         <div className="gap-2">
-            <HeaderWithBack path={"/"} title={'Editar recibo'}/>
+            <HeaderWithBack path={"/home"} title={'Editar recibo'}/>
             <div className="flex flex-col p-4 gap-4">
                 <p className="font-normal text-base">Para editar o recibo compartilhado, troque as informações abaixo.</p>
                 <div className="flex flex-col gap-1">
@@ -94,7 +88,7 @@ export default function editReceitp(){
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="restaurant">Restaurante</Label>
-                    <Input type="text" name="restaurant_name" value={form.restaurant_name} onChange={handleChange}/>
+                    <Input type="text" name="restaurant_name" value={form.place} onChange={handleChange}/>
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="service">Taxa de serviço</Label>

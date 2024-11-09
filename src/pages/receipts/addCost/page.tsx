@@ -1,39 +1,40 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+import PocketBase from 'pocketbase'
 
-import HeaderWithBack from "@/components/headerWithBack";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import { addValueInReceipt } from "@/routes/historics";
+import HeaderWithBack from "@/components/headerWithBack"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function AddCostToReceipt(){
     const location = useLocation()
     const { data } = location.state || {}
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
+    const userId = JSON.parse(localStorage.getItem("userId") as string)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+
+    const receiptId = data.receiptId
 
     const [nameProductField, setNameProduct] = useState('');
     const [valueProductField, setValueProduct] = useState('');
 
     async function actionAddCostInReceitp(){
-        try{
-            const response = await addValueInReceipt(
-                nameProductField,
-                valueProductField,
-                data.userId,
-                data.receiptId
-            )
-            
-            if(response != null){
-                toast.success('Valor adicionado com sucesso.')
-                navigate(`/receiptDetails/${data.receiptId}`)
-            }
-        }catch(error){
+        const dataTo = {
+            name: nameProductField,
+            cost: valueProductField,
+            receiptId: receiptId,
+            userId: userId
+        }
+
+        const response = await pb.collection('costs').create(dataTo) 
+        if(response != null){
+            toast.success('Valor adicionado com sucesso.')
+            navigate(`/receiptDetails/${data.receiptId}`)
+        }else{
             toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
-            console.log(error)
         }
     }
 
