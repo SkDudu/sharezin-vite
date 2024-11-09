@@ -1,46 +1,33 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import PocketBase, { RecordModel } from 'pocketbase'
 
-import HeaderWithBack from "@/components/headerWithBack";
-import EmptyStateParticipants from "@/components/emptyStateParticipants";
-import { Button } from "@/components/ui/button";
+import HeaderWithBack from "@/components/headerWithBack"
+import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-
-import { getOneReceipt, ReceiptProps } from "@/routes/receipts";
-import { getHistoricByReceiptId, HistoricProps } from "@/routes/historics";
+import {  DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react";
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
+    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
 
-    const [receipt, setReceipt] = useState<ReceiptProps | null>()
-    const [historics, setHistorics] = useState<HistoricProps[]>([])
-    const [loading, setLoading] = useState(true)
+    const [receipt, setReceipt] = useState<RecordModel | null>()
+    //const [historics, setHistorics] = useState<HistoricProps[]>([])
+    //const [loading, setLoading] = useState(true)
 
     async function responseGetOneReceipt(){
-        const response = await getOneReceipt(receiptIdParams as string)
+        const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
+            expand: 'ownerId'
+        })
 
+        console.log(response)
         if(response != null){
             setReceipt(response)
         }else{
             toast.error('Esse recibo não existe.')
-        }
-    }
-
-    async function responseGetHistoric(){
-        const response = await getHistoricByReceiptId(receiptIdParams as string)
-
-        if(response != null){
-            setHistorics(response)
-            setLoading(false)
-        } else{
-            setHistorics([])
-            setLoading(false)
         }
     }
 
@@ -95,18 +82,17 @@ export default function ReceiptDetails(){
 
     useEffect(()=>{
         responseGetOneReceipt()
-        responseGetHistoric()
     },[receiptIdParams])
 
     return(
         <>
-            <HeaderWithBack path={'/'} title={'Detalhes do recibo'} />
+            <HeaderWithBack path={'/home'} title={'Detalhes do recibo'} />
             <div className="flex flex-col pt-4 pl-4 pr-4 gap-4">
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-col">
                             <p className="text-xl text-black font-semibold">{receipt?.title}</p>
-                            <p className="text-base text-black font-light">Responsável: {receipt?.users.name}</p>
+                            <p className="text-base text-black font-light">Responsável: {receipt?.ownerId}</p>
                         </div>
                         <Sheet>
                             <SheetTrigger>
@@ -221,35 +207,7 @@ export default function ReceiptDetails(){
 
                 <div className="flex flex-col gap-2">
                     <p className="text-xl text-black font-semibold">Histórico</p>
-                    {loading ? (
-                        <Card className="mt-2">
-                            <CardContent className="flex flex-row p-2 items-center justify-between">
-                                <div className="flex flex-col p-2 justify-between gap-2">
-                                    <Skeleton className="w-[60px] h-[20px] rounded-full" />
-                                    <div className="flex flex-row items-center justify-between gap-2">
-                                        <Skeleton className="w-[20px] h-[20px] rounded-full" />
-                                        <Skeleton className="w-[60px] h-[10px] rounded-full" />
-                                    </div>
-                                </div>
-                                <Skeleton className="w-[60px] h-[20px] rounded-full" />
-                            </CardContent>
-                        </Card>
-                    ) : historics.length === 0 ? (
-                        <EmptyStateParticipants title={"Participantes"} description={"Nenhum participante adicionou um histórico."}/>
-                    ) : (historics?.map((historic) => (
-                            <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
-                                <div className="flex flex-col gap-1">
-                                    <p className="text-base text-black font-normal">{historic.nameProduct}</p>
-                                    <div className="flex flex-row items-center gap-1">
-                                        <Clock />
-                                        <p className="text-base text-black font-light">{new Date(historic.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="text-lg text-black font-semibold">R$ {historic.valueProduct}</p>
-                            </div>
-                        ))
-                    )}
+
                 </div>
             </div>
         </>

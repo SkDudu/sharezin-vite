@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import PocketBase, { ListResult, RecordModel } from 'pocketbase'
 
 import Header from "@/components/header"
@@ -15,8 +15,6 @@ import imgUrl from '../../assets/nodata.svg'
 
 export default function Home() {
     const navigate = useNavigate()
-    const location = useLocation()
-    const { data } = location.state || {}
 
     const [receipts, setReceipts] = useState<ListResult<RecordModel> | null>(null)
     const [closeReceipts, setCloseReceipts] = useState<ListResult<RecordModel> | null>(null)
@@ -24,44 +22,36 @@ export default function Home() {
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
+    const userId = JSON.parse(localStorage.getItem("userId") as string)
+
     async function responseGetAllReceipts(){
-        const response = await pb.collection('receipts').getList(1, 25, {
-            filter: `ownerId = "${data.userId}"`
+        const receiptsOpen = await pb.collection('receipts').getList(1, 25, {
+            filter: `ownerId = "${userId}" && isClosed = false`
         })
 
-        if(response != null){
-            const receiptsOpens = {
-                page: response.page,
-                perPage: response.perPage,
-                totalItems: response.totalItems,
-                totalPages: response.totalPages,
-                items: response.items.filter((receipt) => receipt.isClosed === false)
-            }
-            setReceipts(receiptsOpens)
+        const receiptsClosed = await pb.collection('receipts').getList(1, 25, {
+            filter: `ownerId = "${userId}" && isClosed = true`
+        })
+
+        if(receiptsOpen.items.length == 0){
+            setReceipts(null)
             setLoading(false)
         }
 
-        if (receipts != null) {
-            const receiptsCloseds = {
-                page: receipts.page,
-                perPage: receipts.perPage,
-                totalItems: receipts.totalItems,
-                totalPages: receipts.totalPages,
-                items: receipts.items.filter((receipt) => receipt.isClosed === true)
-            }
-            setCloseReceipts(receiptsCloseds)
+        if(receiptsClosed.items.length == 0){
+            setCloseReceipts(null)
             setLoading(false)
-        } else {
-            return null
+        }
+
+        if(receiptsOpen.items && receiptsClosed.items != null){
+            setReceipts(receiptsOpen)
+            setCloseReceipts(receiptsClosed)
+            setLoading(false)
         }
     }
 
     function createReceipt(){
-        navigate('/createReceipt', {
-            state: {
-                data
-            }
-        })
+        navigate('/createReceipt')
     }
 
     useEffect(()=>{
@@ -96,7 +86,7 @@ export default function Home() {
                     <EmptyState path={imgUrl} title={'Sem recibos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
                 ) : (
                     receipts.items.map((receipt)=>(
-                        <Link key={receipt.id} to={`/receiptDetails/${data.userId}`}>
+                        <Link key={receipt.id} to={`/receiptDetails/${receipt.id}`}>
                             <Card className="mb-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
                                     <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
@@ -109,7 +99,7 @@ export default function Home() {
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.place}</p>
                                     <div className="flex flex-row mt-2">
-                                        {receipt.ownerId === data.userId ? 
+                                        {receipt.ownerId === userId ? 
                                             <Badge variant={"default"} className="bg-blue-500">
                                                 <p className="text-blue-100">Dono</p>
                                             </Badge>
@@ -145,7 +135,7 @@ export default function Home() {
                     <EmptyState path={imgUrl} title={'Sem recibos'} description={'Clique no botão de mais abaixo para adicionar um recibo.'}/>
                 ) : (
                     closeReceipts.items.map((receipt)=>(
-                        <Link key={receipt.id} to={`/receiptDetails/${data.userId}`}>
+                        <Link key={receipt.id} to={`/receiptDetails/${userId}`}>
                             <Card className="mb-2">
                                 <CardHeader className="flex flex-row p-2 justify-between">
                                     <div className="flex flex-row justify-center items-center w-12 h-12 rounded-md bg-blue-100">
@@ -158,7 +148,7 @@ export default function Home() {
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.place}</p>
                                     <div className="flex flex-row mt-2">
-                                        {receipt.ownerId === data.userId ? 
+                                        {receipt.ownerId === userId ? 
                                             <Badge variant={"default"} className="bg-blue-500">
                                                 <p className="text-blue-100">Dono</p>
                                             </Badge>

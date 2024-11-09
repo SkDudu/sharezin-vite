@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast'
 import PocketBase from 'pocketbase'
 
@@ -13,10 +13,10 @@ import generateRandomCode from "@/lib/randomCodeGenerator"
 
 export default function createReceitp(){
     const navigate = useNavigate()
-    const location = useLocation()
-    const { data } = location.state || {}
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
+
+    const userId = JSON.parse(localStorage.getItem("userId") as string)
     
     const [titleField, setTitleField] = useState('')
     const [descriptionField, setDescriptionField] = useState('')
@@ -30,12 +30,10 @@ export default function createReceitp(){
     const tax_cover = coverField
     const tax_service = serviceField
     const code_invitation: string = generateRandomCode(8)
-    const userId = data.userId
-
-    console.log(data.userId)
+    const ownerId = userId as string
 
     const dataReceipt = {
-        title, description, place, tax_cover, tax_service, code_invitation, userId
+        title, description, place, tax_cover, tax_service, code_invitation, ownerId
     }
 
     async function actionCreateReceitp(){
