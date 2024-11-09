@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Plus, Receipt } from "@phosphor-icons/react"
+import { House, Plus, Receipt, User } from "@phosphor-icons/react"
 
 import imgUrl from '../../assets/nodata.svg'
+
+import { Dock, DockIcon } from "@/components/ui/dock"
 
 export default function Home() {
     const navigate = useNavigate()
@@ -64,7 +66,7 @@ export default function Home() {
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>
-                    <TabsTrigger value="RecibosFechados" className="w-full">Recibos fechados</TabsTrigger>
+                    <TabsTrigger value="RecibosFechados" className="w-full">Meus recibos fechados</TabsTrigger>
                 </TabsList>
                 <TabsContent value="meusRecibos">
                 {loading ? (
@@ -157,9 +159,21 @@ export default function Home() {
                 )}
                 </TabsContent>
             </Tabs>
-            <Button onClick={createReceipt} className="fixed bg-blue-950 top-[85%] left-[80%] rounded-full w-15 h-15 p-3">
-                <Plus size={32}/>
-            </Button>
+            <div className="absolute bottom-6 right-4 left-4">
+                <Dock direction="middle" magnification={0} distance={0} className="gap-6">
+                    <DockIcon>
+                        <House size={22} />
+                    </DockIcon>
+                    <DockIcon>
+                        <Button onClick={createReceipt} className="bg-blue-100 w-10 h-10 p-2">
+                            <Plus size={64} color="#1e3a8a"/>
+                        </Button>
+                    </DockIcon>
+                    <DockIcon>
+                        <User size={22} />
+                    </DockIcon>
+                </Dock>
+            </div>
         </div>
     )
 }

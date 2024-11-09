@@ -260,7 +260,11 @@ export default function ReceiptDetails(){
 
                     <div className="flex flex-col items-center">
                         <p className="text-base text-black font-light">Seu consumo total</p>
-                        <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueParticipant)}</p>
+                        {loading ? (
+                            <Skeleton className="w-[100px] h-[40px] rounded-full" />
+                        ) : (
+                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueParticipant)}</p>
+                        )}
                     </div>
 
                     {isClosed == false ? (
@@ -277,7 +281,11 @@ export default function ReceiptDetails(){
                     <p className="text-xl text-black font-semibold">Informações gerais do recibo</p>
                     <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 items-center border">
                         <p className="text-base text-black font-light">Custo total do recibo compartilhado</p>
-                        <p className="text-4xl text-black font-medium">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueReceipt)}</p>
+                        {loading ? (
+                            <Skeleton className="w-[100px] h-[40px] rounded-full" />
+                        ) : (
+                            <p className="text-4xl text-black font-medium">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueReceipt)}</p>
+                        )}
                     </div>
                     <div className="flex flex-row gap-2">
                         <div className="flex flex-col w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
