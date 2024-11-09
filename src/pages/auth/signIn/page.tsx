@@ -15,6 +15,7 @@ export default function signIn(){
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errors, setErrors] = useState({ email: '', password: ''})
     const [loading, setLoading] = useState(false)
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
@@ -37,25 +38,53 @@ export default function signIn(){
         navigate("/forgotpass")
     }
 
-    async function actionSignIn(){
-        setLoading(true)
-        const identity = email
-
-        try {
-            const response = await pb.collection('users').authWithPassword(identity, password)
+    const validate = ()=>{
+        let isValid = true
+        const errors = { email: '' , password: ''}
     
-            if (response != null) {
-                localStorage.clear()
-                localStorage.setItem("userId", JSON.stringify(response.record.id))
+        if(!email){
+            errors.email = 'Campo de e-mail obrigatório.'
+            isValid = false
+        }else if (!/\S+@\S+\.\S+/.test(email)){
+            errors.email = 'Email inválido.'
+            isValid = false
+        }
+    
+        if(!password){
+            errors.password = 'Campo de senha obrigatório.'
+            isValid = false
+        }else if (password.length < 6){
+            errors.password = 'Senha precisa ter 6 caracteres.'
+            isValid = false
+        }
+
+        setErrors(errors)
+        return isValid
+    }
+
+    async function actionSignIn(){
+        if(validate()){
+            setLoading(true)
+            const identity = email
+
+            try {
+                const response = await pb.collection('users').authWithPassword(identity, password)
+        
+                if (response != null) {
+                    localStorage.clear()
+                    localStorage.setItem("userId", JSON.stringify(response.record.id))
+                    setLoading(false)
+                    navigate('/home')
+                } else {
+                    setLoading(false)
+                    toast.error('Erro ao tentar fazer o login.')
+                }
+            } catch (error) {
                 setLoading(false)
-                navigate('/home')
-            } else {
-                setLoading(false)
-                toast.error('Erro ao tentar fazer o login.')
+                toast.error('Erro ao tentar fazer o login. Por favor, verifique suas credenciais e tente novamente.');
             }
-        } catch (error) {
-            setLoading(false)
-            toast.error('Erro ao tentar fazer o login. Por favor, verifique suas credenciais e tente novamente.');
+        }else {
+            toast.error('Formulário preenchido incorretamente.')
         }
     }
 
@@ -74,10 +103,12 @@ export default function signIn(){
                         <div className="flex flex-col space-y-1.5">
                             <Label>Email</Label>
                             <Input type="email" value={email} onChange={handleEmailChange}/>
+                            {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
                         </div>
                         <div className="flex flex-col space-y-1.5">
                             <Label>Senha</Label>
                             <Input type="password" value={password} onChange={handlePasswordChange}/>
+                            {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
                         </div>
                         <Button onClick={navForgotpass} variant={"ghost"} className="w-full justify-start p-0 hover:bg-transparent">
                             <p className="font-normal underline">Esqueci minha senha</p>

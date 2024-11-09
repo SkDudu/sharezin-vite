@@ -90,11 +90,11 @@ export default function signUp(){
     }
 
     async function actionSignUp() {
-        const username = name;
-        const data = { name, email, password, passwordConfirm, username };
+        const username = name
+        const data = { name, email, password, passwordConfirm, username }
     
         if (validate()) {
-            setLoading(true);
+            setLoading(true)
     
             try {
                 const response = await pb.collection('users').create(data);
@@ -116,7 +116,7 @@ export default function signUp(){
                 }
             }
         } else {
-            toast.error('Formulário preenchido incorretamente.');
+            toast.error('Formulário preenchido incorretamente.')
         }
     }
 
