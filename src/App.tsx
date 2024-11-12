@@ -7,6 +7,7 @@ import Home from './pages/home/page'
 import Profile from './pages/profile/page.tsx'
 import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
+import ManagerPaticipants from './pages/receipts/managerParticipants/page.tsx'
 import AddCost from './pages/receipts/addCost/page'
 import ResumeReceipt from './pages/receipts/resumeReceipt/page'
 import SearchReceipt from './pages/receipts/searchReceipts/page'
@@ -55,6 +56,11 @@ const router = createBrowserRouter([
   {
     path: '/resumeReceipt',
     element: <ResumeReceipt />,
+    errorElement: <Error />
+  },
+  {
+    path: '/receiptDetails/managementParticipants/:receiptIdParams',
+    element: <ManagerPaticipants />,
     errorElement: <Error />
   },
   {
