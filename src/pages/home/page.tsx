@@ -150,7 +150,7 @@ export default function Home() {
                                     <p>{receipt.description}</p>
                                     <p className="font-thin">Restaurante: {receipt.place}</p>
                                     <Badge variant={"default"} className="bg-slate-300 max-w-[190px]">
-                                        <p className="text-slate-500">Fechado em: {new Date(receipt.created).toLocaleDateString('pt-BR')}, {new Date(receipt.created).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</p>
+                                        <p className="text-slate-500">Fechado em: {new Date(receipt.updated).toLocaleDateString('pt-BR')}, {new Date(receipt.updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</p>
                                     </Badge>
                                 </CardContent>
                             </Card>
