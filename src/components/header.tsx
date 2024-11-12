@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { MagnifyingGlass } from "@phosphor-icons/react"
 
 interface headerProps {
-    title: string,
+    name: string,
     isProfile: boolean
 }
 
@@ -21,7 +21,7 @@ export default function Header(props: headerProps) {
                 </div>
                 <div className="flex flex-col">
                     <p className="text-sm font-light text-stone-600">Bem vindo!</p>
-                    <p className="text-base font-semibold text-stone-950">{props.title}</p>
+                    <p className="text-base font-semibold text-stone-950">{props.name}</p>
                 </div>
             </div>
 
