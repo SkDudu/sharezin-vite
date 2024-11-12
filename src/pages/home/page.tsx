@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import PocketBase, { ListResult, RecordModel } from 'pocketbase'
 
 import Header from "@/components/header"
+import Dock from "@/components/dock.tsx"
 import EmptyState from "@/components/emptyState"
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
-import { House, Plus, Receipt, User } from "@phosphor-icons/react"
+import { Receipt } from "@phosphor-icons/react"
 
 import imgUrl from '../../assets/nodata.svg'
 
-import { Dock, DockIcon } from "@/components/ui/dock"
-
 export default function Home() {
-    const navigate = useNavigate()
-
     const [receipts, setReceipts] = useState<ListResult<RecordModel> | null>(null)
     const [closeReceipts, setCloseReceipts] = useState<ListResult<RecordModel> | null>(null)
     const [loading, setLoading] = useState(true)
@@ -50,10 +46,6 @@ export default function Home() {
             setCloseReceipts(receiptsClosed)
             setLoading(false)
         }
-    }
-
-    function createReceipt(){
-        navigate('/createReceipt')
     }
 
     useEffect(()=>{
@@ -159,21 +151,7 @@ export default function Home() {
                 )}
                 </TabsContent>
             </Tabs>
-            <div className="absolute bottom-6 right-4 left-4">
-                <Dock direction="middle" magnification={0} distance={0} className="gap-6">
-                    <DockIcon>
-                        <House size={22} />
-                    </DockIcon>
-                    <DockIcon>
-                        <Button onClick={createReceipt} className="bg-blue-100 w-10 h-10 p-2">
-                            <Plus size={64} color="#1e3a8a"/>
-                        </Button>
-                    </DockIcon>
-                    <DockIcon>
-                        <User size={22} />
-                    </DockIcon>
-                </Dock>
-            </div>
+            <Dock />
         </div>
     )
 }
