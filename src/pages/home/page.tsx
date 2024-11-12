@@ -21,6 +21,7 @@ export default function Home() {
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     const userId = JSON.parse(localStorage.getItem("userId") as string)
+    const username = JSON.parse(localStorage.getItem("username") as string)
 
     async function responseGetAllReceipts(){
         const receiptsOpen = await pb.collection('receipts').getList(1, 25, {
@@ -54,7 +55,7 @@ export default function Home() {
 
     return (
         <div className="flex flex-col p-4 gap-2 w-screen h-screen">
-            <Header title={userId} isProfile={false}/>
+            <Header name={username} isProfile={false}/>
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>
