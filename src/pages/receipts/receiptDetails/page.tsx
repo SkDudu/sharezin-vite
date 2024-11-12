@@ -22,6 +22,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import EmptyStateParticipants from "@/components/emptyStateParticipants"
+import {format} from "date-fns";
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
@@ -87,7 +88,13 @@ export default function ReceiptDetails(){
     const participantId = participant?.map(participant => participant.id)
     const costTotalParticipant = participant?.map(participant => participant.totalCost)
 
+    const now = new Date()
+    const currentDate = format(now, 'yyyy-MM-dd')
+    const currentTime = format(now, 'HH:mm:ss')
+    const datenow = `${currentDate} ${currentTime}`
+
     async function closedMyParticipant(){
+
         const data={
             isClosed: true
         }
@@ -107,7 +114,8 @@ export default function ReceiptDetails(){
 
     async function closedMyRecipt(){
         const data={
-            isClosed: true
+            isClosed: true,
+            closedAt: datenow
         }
         const responseReceipt = await pb.collection('receipts').update(`${receiptIdParams}`, data)
 
