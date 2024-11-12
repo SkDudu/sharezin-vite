@@ -38,6 +38,11 @@ export default function ReceiptDetails(){
 
         if(responsePart){
             setParticipant(responsePart)
+            if(responsePart[0].isClosed == true){
+                setIsCLosed(true)
+            }else{
+                setIsCLosed(false)
+            }
         }
 
         const responseHistoric = await pb.collection('costs').getFullList({
@@ -53,11 +58,6 @@ export default function ReceiptDetails(){
 
         if(response != null){
             setReceipt(response)
-            if(response.isClosed == true){
-                setIsCLosed(true)
-            }else{
-                setIsCLosed(false)
-            }
         }else{
             toast.error('Esse recibo não existe.')
         }
@@ -85,7 +85,7 @@ export default function ReceiptDetails(){
 
         if(response){
             navigate(`/receiptDetails/${receiptIdParams}`)
-            toast.success('Recibo fechado com sucesso.')
+            toast.success('Seu recibo foi fechado com sucesso.')
         }else{
             toast.error('Erro ao tentar fechar o seu recibo, tente novamente.')
         }
@@ -152,7 +152,11 @@ export default function ReceiptDetails(){
                 data: {
                     id: receipt?.id,
                     title: receipt?.title,
-                    place: receipt?.place
+                    place: receipt?.place,
+                    cover: receipt?.tax_cover,
+                    service: receipt?.tax_service,
+                    total: myValueReceipt,
+                    historics: historics
                 }
             }
         })
@@ -241,7 +245,7 @@ export default function ReceiptDetails(){
                                             <DialogHeader>
                                             <DialogTitle className="flex justify-start">Encerrar seu recibo?</DialogTitle>
                                             <DialogDescription className="text-start">
-                                                Você deseja encerrar sua participação nesse recibo? Você não poderá retornar a ele.
+                                                Você deseja encerrar completamente o recibo?
                                             </DialogDescription>
                                             </DialogHeader>
                                             <div className="flex flex-row gap-2 w-full justify-between">
@@ -313,7 +317,7 @@ export default function ReceiptDetails(){
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mb-4">
                     <p className="text-xl text-black font-semibold">Histórico</p>
                     {
                         loading ? (
@@ -341,7 +345,7 @@ export default function ReceiptDetails(){
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-lg text-black font-semibold">R$ {historic.cost}</p>
+                                <p className="text-lg text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(historic.cost)}</p>
                             </div>
                         )))
                     }
