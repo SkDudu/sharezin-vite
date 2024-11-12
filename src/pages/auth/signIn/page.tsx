@@ -73,6 +73,8 @@ export default function signIn(){
                 if (response != null) {
                     localStorage.clear()
                     localStorage.setItem("userId", JSON.stringify(response.record.id))
+                    localStorage.setItem("username", JSON.stringify(response.record.name))
+                    localStorage.setItem("useremail", JSON.stringify(response.record.email))
                     setLoading(false)
                     navigate('/home')
                 } else {
