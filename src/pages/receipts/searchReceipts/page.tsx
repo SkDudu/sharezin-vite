@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Receipt } from "@phosphor-icons/react"
 
 export default function searchReceipts(){
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const navigate = useNavigate()
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
     const userId = JSON.parse(localStorage.getItem("userId") as string)
@@ -24,7 +25,7 @@ export default function searchReceipts(){
     async function getReceiptByCode(){
         setLoading(true);
         const response = await pb.collection('receipts').getFirstListItem(`code_invitation="${codeField}"`)
-        if(response != null){
+        if(response != null && response.isClosed == false){
             setReceipts([response])
         } else {
             toast.error('Não existe recibos com esse código, digite um código válido.')
