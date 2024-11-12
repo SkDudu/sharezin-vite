@@ -1,7 +1,8 @@
-import { useNavigate, useParams } from "react-router-dom"
+import {replace, useNavigate, useParams} from "react-router-dom"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import PocketBase, { RecordModel } from 'pocketbase'
+import {format} from "date-fns";
 
 import HeaderWithBack from "@/components/headerWithBack"
 import { Button } from "@/components/ui/button"
@@ -15,14 +16,13 @@ import {
     Percent,
     Plus,
     Receipt,
-    ShareNetwork,
+    ShareNetwork, UserGear,
     UsersThree,
     X,
 } from "@phosphor-icons/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import EmptyStateParticipants from "@/components/emptyStateParticipants"
-import {format} from "date-fns";
 
 export default function ReceiptDetails(){
     const navigate = useNavigate()
@@ -120,11 +120,15 @@ export default function ReceiptDetails(){
         const responseReceipt = await pb.collection('receipts').update(`${receiptIdParams}`, data)
 
         if(responseReceipt){
-            navigate(`/receiptDetails/${receiptIdParams}`)
+            replace(`/receiptDetails/${receiptIdParams}`)
             toast.success('Recibo fechado com sucesso.')
         }else{
             toast.error('Erro ao tentar fechar o recibo, tente novamente.')
         }
+    }
+
+    function navigateToManageParticipants(){
+        navigate(`/receiptDetails/managementParticipants/${receiptIdParams}`)
     }
 
     function navigateToEditReceipt(){
@@ -218,10 +222,22 @@ export default function ReceiptDetails(){
                                     <SheetTitle>Opções</SheetTitle>
                                 </SheetHeader>
                                 <div className="flex flex-col mt-2 gap-2">
-                                    <Button variant={"default"} onClick={()=>{}} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <UsersThree color="#0c0a09" weight="regular" size={18} />
-                                        Visualizar participantes
-                                    </Button>
+                                    {receipt?.user != userId ?
+                                        <Button variant={"default"} onClick={()=>{}} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <UsersThree color="#0c0a09" weight="regular" size={18} />
+                                            Visualizar participantes
+                                        </Button>
+                                        :
+                                        <></>
+                                    }
+                                    {receipt?.user == userId ?
+                                        <Button variant={"default"} onClick={navigateToManageParticipants} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <UserGear color="#0c0a09" weight="regular" size={18} />
+                                            Gerenciar participantes
+                                        </Button>
+                                        :
+                                        <></>
+                                    }
                                     {receipt?.user == userId ?
                                         <Button variant={"default"} onClick={navigateToEditReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
                                             <PencilSimple color="#0c0a09" weight="regular" size={18} />
