@@ -4,6 +4,7 @@ import SignIn from './pages/auth/signIn/page'
 import SignUp from './pages/auth/signUp/page'
 import ForgotPass from './pages/auth/forgotPass/page'
 import Home from './pages/home/page'
+import Profile from './pages/profile/page.tsx'
 import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
 import AddCost from './pages/receipts/addCost/page'
@@ -75,7 +76,12 @@ const router = createBrowserRouter([
     path: '/historicOfReceipt/:receiptIdParams',
     element: <></>,
     errorElement: <Error />
-  }
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+    errorElement: <Error />
+  },
 ])
 
 function App() {
