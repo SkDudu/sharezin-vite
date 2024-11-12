@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast'
 import PocketBase from 'pocketbase'
@@ -7,17 +8,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useState } from "react"
 
 import generateRandomCode from "@/lib/randomCodeGenerator"
 
 export default function createReceitp(){
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const navigate = useNavigate()
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
     const userId = JSON.parse(localStorage.getItem("userId") as string)
-    
+
     const [titleField, setTitleField] = useState('')
     const [descriptionField, setDescriptionField] = useState('')
     const [restaurantField, setRestaurantField] = useState('')
@@ -46,7 +47,7 @@ export default function createReceitp(){
                     totalCost: 0,
                     receiptId: response.id
                 }
-    
+
                 await pb.collection('participants').create(data)
                 toast.success('Recibo criado com sucesso.')
                 navigate('/home')

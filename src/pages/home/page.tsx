@@ -54,7 +54,7 @@ export default function Home() {
 
     return (
         <div className="flex flex-col p-4 gap-2 w-screen h-screen">
-            <Header title={userId}/>
+            <Header title={userId} isProfile={false}/>
             <Tabs defaultValue="meusRecibos">
                 <TabsList className="w-full">
                     <TabsTrigger value="meusRecibos" className="w-full">Meus recibos</TabsTrigger>
@@ -151,7 +151,7 @@ export default function Home() {
                 )}
                 </TabsContent>
             </Tabs>
-            <Dock />
+            <Dock screen={"home"}/>
         </div>
     )
 }

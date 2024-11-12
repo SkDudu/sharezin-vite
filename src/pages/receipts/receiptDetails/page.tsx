@@ -7,7 +7,18 @@ import HeaderWithBack from "@/components/headerWithBack"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import {  Clock, DotsThreeVertical, MicrophoneStage, PencilSimple, Percent, Plus, Receipt, ShareNetwork, X } from "@phosphor-icons/react"
+import {
+    Clock,
+    DotsThreeVertical,
+    MicrophoneStage,
+    PencilSimple,
+    Percent,
+    Plus,
+    Receipt,
+    ShareNetwork,
+    UsersThree,
+    X,
+} from "@phosphor-icons/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import EmptyStateParticipants from "@/components/emptyStateParticipants"
@@ -199,14 +210,26 @@ export default function ReceiptDetails(){
                                     <SheetTitle>Opções</SheetTitle>
                                 </SheetHeader>
                                 <div className="flex flex-col mt-2 gap-2">
-                                    <Button variant={"default"} onClick={navigateToEditReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <PencilSimple color="#0c0a09" weight="regular" size={18} />
-                                        Editar informações do recibo
+                                    <Button variant={"default"} onClick={()=>{}} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                        <UsersThree color="#0c0a09" weight="regular" size={18} />
+                                        Visualizar participantes
                                     </Button>
-                                    <Button variant={"default"} onClick={navigateToShareReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
-                                        <ShareNetwork color="#0c0a09" weight="regular" size={18} />
-                                        Compartilhar recibo
-                                    </Button>
+                                    {receipt?.user == userId ?
+                                        <Button variant={"default"} onClick={navigateToEditReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <PencilSimple color="#0c0a09" weight="regular" size={18} />
+                                            Editar informações do recibo
+                                        </Button>
+                                    :
+                                        <></>
+                                    }
+                                    {receipt?.user == userId ?
+                                        <Button variant={"default"} onClick={navigateToShareReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
+                                            <ShareNetwork color="#0c0a09" weight="regular" size={18} />
+                                            Compartilhar recibo
+                                        </Button>
+                                        :
+                                        <></>
+                                    }
                                     <Button variant={"default"} onClick={navigateToResumeReceipt} className="w-full justify-start bg-white text-stone-950 gap-1 hover:bg-stone-100">
                                         <Receipt color="#0c0a09" weight="regular" size={18} />
                                         Resumo da seu recibo
@@ -233,7 +256,7 @@ export default function ReceiptDetails(){
                                             </div>
                                         </DialogContent>
                                     </Dialog>
-                                    {cancelReceipt == true ? (
+                                    {cancelReceipt ? (
                                         <Dialog>
                                         <DialogTrigger>
                                             <Button variant={"default"} className="w-full justify-start bg-white text-red-500 gap-1 hover:bg-stone-100">
@@ -262,7 +285,7 @@ export default function ReceiptDetails(){
                         </Sheet>
                     </div>
 
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center mb-2">
                         <p className="text-base text-black font-light">Seu consumo total</p>
                         {loading ? (
                             <Skeleton className="w-[100px] h-[40px] rounded-full" />
