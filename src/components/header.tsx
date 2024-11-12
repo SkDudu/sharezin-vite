@@ -1,28 +1,15 @@
-import toast from "react-hot-toast"
-import { Link, useNavigate } from "react-router-dom"
-import PocketBase from 'pocketbase'
+import { Link } from "react-router-dom"
 
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Button } from "./ui/button"
 
-import { House, List, MagnifyingGlass, SignOut, X } from "@phosphor-icons/react"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 interface headerProps {
-    title: String
+    title: string,
+    isProfile: boolean
 }
 
 export default function Header(props: headerProps) {
-    const navigate = useNavigate()
-    const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
-
-    async function logoff(){
-        pb.authStore.clear()
-        localStorage.clear()
-        toast.success('Logout efetuado com sucesso.')
-        navigate('/')
-    }
-
     return(
         <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row gap-2">
@@ -38,41 +25,15 @@ export default function Header(props: headerProps) {
                 </div>
             </div>
 
-            <div className="flex flex-row gap-4">
-                <Link to={'/searchReceipts'}>
-                    <MagnifyingGlass size={24} />
-                </Link>
-                
-                <Sheet>
-                    <SheetTrigger>
-                        <List size={24} />
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle className="flex justify-start">
-                                <div className="flex flex-row w-full justify-between items-center pb-2">
-                                    Menu
-                                    <SheetClose>
-                                        <X size={24} />
-                                    </SheetClose>
-                                </div>
-                            </SheetTitle>
-                        </SheetHeader>
-                        <SheetDescription className="flex flex-col gap-4">
-                            <div>
-                                <Button variant={"default"} onClick={()=>{navigate('/home')}} className="w-full justify-start bg-white text-stone-950 gap-3 hover:bg-stone-100">
-                                    <House color="#0c0a09" weight="regular" size={18} />
-                                    Home
-                                </Button>
-                            </div>
-                            <Button variant={"default"} onClick={logoff} className="w-full justify-start bg-red-500 text-stone-100 gap-3 hover:bg-red-600">
-                                <SignOut size={18} weight="bold"/>
-                                Sair
-                            </Button>
-                        </SheetDescription>
-                    </SheetContent>
-                </Sheet>
-            </div>
+            {props.isProfile ?
+                <></>
+            :
+                <div className="flex flex-row gap-4">
+                    <Link to={'/searchReceipts'}>
+                        <MagnifyingGlass size={24}/>
+                    </Link>
+                </div>
+            }
         </div>
     )
 }
