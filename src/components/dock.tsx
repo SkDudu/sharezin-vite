@@ -1,6 +1,6 @@
 import {Dock, DockIcon} from "@/components/ui/dock.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {House, Plus, User} from "@phosphor-icons/react";
+import {House, Plus, Receipt, User} from "@phosphor-icons/react";
 import {useNavigate} from "react-router-dom";
 
 interface DockProps{
@@ -38,9 +38,31 @@ export default function dock(props: DockProps){
                     }
                 </DockIcon>
                 <DockIcon>
+                    {props.screen == "inviteReceipts" ?
+                        <Button onClick={()=>{}} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
+                            <Receipt size={22} color='#fff'/>
+                        </Button>
+                        :
+                        <Button onClick={()=>{}} variant={"default"} className="bg-white hover:bg-white">
+                            <Receipt size={22} color='#oboc10'/>
+                        </Button>
+                    }
+                </DockIcon>
+                <DockIcon>
                     <Button onClick={createReceipt} className="bg-blue-100 w-10 h-10 p-2 hover:bg-blue-400">
                         <Plus size={64} color="#1e3a8a"/>
                     </Button>
+                </DockIcon>
+                <DockIcon>
+                    {props.screen == "inviteReceipts" ?
+                        <Button onClick={()=>{}} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
+                            <House size={22} color='#fff'/>
+                        </Button>
+                        :
+                        <Button onClick={()=>{}} variant={"default"} className="bg-white hover:bg-white">
+                            <House size={22} color='#oboc10'/>
+                        </Button>
+                    }
                 </DockIcon>
                 <DockIcon>
                     {props.screen == "profile" ?
