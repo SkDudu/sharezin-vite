@@ -38,7 +38,7 @@ export default function AddCostToReceipt(){
                 return
             }
     
-            let sum = costValue + totalCost
+            const sum = costValue + totalCost
     
             const dataToParticipant = {
                 totalCost: sum
@@ -80,7 +80,7 @@ export default function AddCostToReceipt(){
                     <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                         <div className="flex flex-col items-center">
                             <p className="text-base text-black font-light">Sua parte do recibo compartilhado</p>
-                            <p className="text-4xl text-black font-semibold">{data.TotalCost[0]}</p>
+                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(data.TotalCost[0])}</p>
                         </div>
                     </div>
 
