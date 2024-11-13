@@ -39,6 +39,11 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
+    path: '/myreceipts',
+    element: <ReceitpDetails />,
+    errorElement: <Error />
+  },
+  {
     path: '/createReceipt',
     element: <CreateReceitp />,
     errorElement: <Error />
