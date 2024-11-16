@@ -21,6 +21,8 @@ export default function AddCostToReceipt(){
     const [nameProductField, setNameProduct] = useState('')
     const [valueProductField, setValueProduct] = useState('')
 
+    console.log('page addCost', data.historics)
+
     async function actionAddCostInReceitp() {
         try {
             const dataToCost = {
@@ -30,28 +32,52 @@ export default function AddCostToReceipt(){
                 userId: userId
             }
     
-            const costValue = parseFloat(valueProductField)
-            const totalCost = data.TotalCost[0]
+            const costValue = parseFloat(valueProductField.replace(',', '.'))
     
-            if (isNaN(costValue) || isNaN(totalCost)) {
+            if (isNaN(costValue)) {
                 toast.error('Por favor, insira valores válidos.')
                 return
             }
     
-            const sum = costValue + totalCost
+            const sum = costValue + data.TotalCost
     
             const dataToParticipant = {
                 totalCost: sum
             }
-    
-            const response = await pb.collection('costs').create(dataToCost)
-            const responseSumTotal = await pb.collection('participants').update(`${data.participantId[0]}`, dataToParticipant)
-    
-            if (response != null && responseSumTotal != null) {
-                toast.success('Valor adicionado com sucesso.')
-                navigate(`/receiptDetails/${data.receiptId}`)
-            } else {
-                toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
+
+            if(data.historics == null){
+                const response = await pb.collection('costs').create(dataToCost)
+                const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
+
+                const dataHistoric = {
+                    costs: response.id
+                }
+                const responseHistoricInReceipt = await pb.collection('receipts').update(`${receiptId}`, dataHistoric)
+
+                if (response != null && responseSumTotal != null && responseHistoricInReceipt != null) {
+                    toast.success('Valor adicionado com sucesso.')
+                    navigate(`/receiptDetails/${data.receiptId}`)
+                } else {
+                    toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
+                }
+            }else{
+                const response = await pb.collection('costs').create(dataToCost)
+
+                const currentHistorics = data.historics
+                const updatedHistorics=[...currentHistorics, response.id]
+                const dataHistoric = {
+                    costs: updatedHistorics
+                }
+                const responseHistoricInReceipt = await pb.collection('receipts').update(`${receiptId}`, dataHistoric)
+
+                const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
+
+                if (response != null && responseSumTotal != null && responseHistoricInReceipt != null) {
+                    toast.success('Valor adicionado com sucesso.')
+                    navigate(`/receiptDetails/${data.receiptId}`)
+                } else {
+                    toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
+                }
             }
         } catch (error) {
             console.error('Error adding cost:', error)
@@ -80,7 +106,7 @@ export default function AddCostToReceipt(){
                     <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                         <div className="flex flex-col items-center">
                             <p className="text-base text-black font-light">Sua parte do recibo compartilhado</p>
-                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(data.TotalCost[0])}</p>
+                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(data.TotalCost)}</p>
                         </div>
                     </div>
 

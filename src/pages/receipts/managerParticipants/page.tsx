@@ -91,7 +91,7 @@ export default function manageParticipants(){
                     ) : participants?.length === 0 ? (
                         <EmptyStateParticipants title={"Participantes"} description={"Nenhum participante adicionou um histórico."}/>
                     ) : (participants?.map((participant) => (
-                        <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">
+                        <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border mb-2">
                             <div className={"flex flex-col gap-1"}>
                                 <p className="text-base text-black font-normal">{participant.expand.user.name}</p>
                                 <p className="text-xs text-slate-500 font-normal">{new Date(participant.created).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</p>

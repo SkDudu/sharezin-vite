@@ -38,36 +38,39 @@ export default function ReceiptDetails(){
     const [cancelReceipt, setCancelReceipt] = useState(false)
     const [valueTotal, setValueTotal] = useState(0)
 
-    const [isClosed, setIsCLosed] = useState(false)
+    const [isClosedParticipant, setIsClosedParticipant] = useState(false)
 
     async function responseGetOneReceipt(){
         const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
-            expand: 'user'
+            expand: 'user, participants, costs'
         })
 
-        const responsePart = await pb.collection('participants').getFullList({
-            filter: `receiptId="${receiptIdParams}" && user ="${userId}"`
-        })
-
-        if(responsePart){
-            setParticipant(responsePart)
-            if(responsePart[0].isClosed == true){
-                setIsCLosed(true)
-            }else{
-                setIsCLosed(false)
-            }
+        if(response.participants != null){
+            const matchingParticipant = response.expand?.participants.find(
+                (participant) => participant.user === userId
+            )
+            setParticipant(matchingParticipant)
+            setIsClosedParticipant(matchingParticipant.isClosed)
+        }else{
+            setParticipant(null)
         }
 
-        const responseHistoric = await pb.collection('costs').getFullList({
-            filter: `receiptId="${receiptIdParams}"`,
-            sort: '-created'
-        })
+        if (response.expand?.costs && Array.isArray(response.expand?.costs)) {
+            const costsFrom = response.expand.costs
+                .map((cost) => ({
+                    ...cost,
+                    created: new Date(cost.created),
+                }))
+                .sort((a, b) => a.created.getTime() - b.created.getTime())
+            setHistorics(costsFrom)
 
-        const totalCost = responseHistoric.reduce((sum, item) => {
-            return sum + parseFloat(item.cost || 0)
-        }, 0)
-
-        setValueTotal(totalCost)
+            const totalCost = costsFrom.reduce((sum, item) => {
+                return sum + parseFloat(item.cost || 0)
+            }, 0)
+            setValueTotal(totalCost)
+        } else {
+            setHistorics(null)
+        }
 
         if(response != null){
             setReceipt(response)
@@ -76,7 +79,6 @@ export default function ReceiptDetails(){
         }
 
         if(response != null){
-            setHistorics(responseHistoric)
             setLoading(false)
             if(response.user == userId){
                 setCancelReceipt(true)
@@ -86,8 +88,7 @@ export default function ReceiptDetails(){
         }
     }
 
-    const participantId = participant?.map(participant => participant.id)
-    const costTotalParticipant = participant?.map(participant => participant.totalCost)
+    console.log('Page details', historics)
 
     const now = new Date()
     const currentDate = format(now, 'yyyy-MM-dd')
@@ -100,7 +101,7 @@ export default function ReceiptDetails(){
             isClosed: true
         }
 
-        const response = await pb.collection('participants').update(`${participantId}`, data)
+        const response = await pb.collection('participants').update(`${participant?.user}`, data)
 
         if(response){
             navigate(`/receiptDetails/${receiptIdParams}`)
@@ -110,7 +111,7 @@ export default function ReceiptDetails(){
         }
     }
 
-    const myValueParticipant = costTotalParticipant?.[0] + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
+    const myValue = participant?.totalCost + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
     const myValueReceipt = valueTotal + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
 
     async function closedMyRecipt(){
@@ -159,12 +160,14 @@ export default function ReceiptDetails(){
     }
 
     function navigateToAddCostInReceipt(){
+        const costsIds = historics?.map(item => item.id)
         navigate('/addValueInReceipt', {
             state: {
                 data: {
                     receiptId: receiptIdParams,
-                    participantId: participantId,
-                    TotalCost: costTotalParticipant
+                    participantId: participant?.id,
+                    TotalCost: participant?.totalCost,
+                    historics: costsIds
                 }
             }
         })
@@ -210,7 +213,7 @@ export default function ReceiptDetails(){
                         </div>
                         <Sheet>
                             <SheetTrigger>
-                                {isClosed == false ? (
+                                {isClosedParticipant == false && receipt?.isClosed == false ? (
                                     <Button className="w-10 h-10 p-0 bg-blue-100 rounded-full hover:bg-blue-100">
                                         <DotsThreeVertical size={24} color="#172554"/>
                                     </Button>
@@ -315,11 +318,11 @@ export default function ReceiptDetails(){
                         {loading ? (
                             <Skeleton className="w-[100px] h-[40px] rounded-full" />
                         ) : (
-                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValueParticipant)}</p>
+                            <p className="text-4xl text-black font-semibold">{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(myValue)}</p>
                         )}
                     </div>
 
-                    {isClosed == false ? (
+                    {!isClosedParticipant && receipt?.isClosed == false ? (
                         <Button onClick={navigateToAddCostInReceipt}>
                             <Plus size={18} weight="bold"/>
                             <p className="text-base text-white font-light pl-2">Adicionar valor</p>
@@ -381,7 +384,7 @@ export default function ReceiptDetails(){
                                     <Skeleton className="w-[60px] h-[20px] rounded-full" />
                                 </CardContent>
                             </Card>
-                        ) : historics?.length === 0 ? (
+                        ) : historics?.length == null ? (
                             <EmptyStateParticipants title={"Participantes"} description={"Nenhum participante adicionou um histórico."}/>
                         ) : (historics?.map((historic) => (
                             <div className="flex flex-row justify-between items-center w-full h-min bg-stone-50 p-2 rounded-lg gap-1 border">

@@ -20,48 +20,68 @@ export default function searchReceipts(){
 
     const [codeField, setCodeField] = useState('')
     const [receipts, setReceipts] = useState<RecordModel[]>([])
+    const [participants, setParticipants] = useState<RecordModel[]>([])
     const [loading, setLoading] = useState(false)
+    const [AlredyParticipant, setAlredyParticipant] = useState(false)
+    const [receiptId, setReceiptid] = useState()
+    const [owner, setOwner] = useState()
 
     async function getReceiptByCode(){
-        setLoading(true);
-        const response = await pb.collection('receipts').getFirstListItem(`code_invitation="${codeField}"`)
+        setLoading(true)
+        const response = await pb.collection('receipts').getFirstListItem(`code_invitation="${codeField}"`,{
+            expand: 'participants.user',
+        })
         if(response != null && response.isClosed == false){
             setReceipts([response])
+            setParticipants(response.participants)
+            setReceiptid(response.id)
+            setOwner(response.user)
+
+            const filteredParticipants = response?.expand?.participants?.filter(
+                participant => participant.expand?.user?.id === userId
+            )
+            if(filteredParticipants.length > 0){
+                setAlredyParticipant(true)
+            }else{
+                setAlredyParticipant(false)
+            }
+
+            console.log(filteredParticipants)
         } else {
             toast.error('Não existe recibos com esse código, digite um código válido.')
+            setLoading(false)
         }
         setLoading(false)
     }
 
+
+
     async function getInsideOfReceipt(){
-        const userOwner = receipts.map((receipt) => receipt?.user)
-        const receipt = receipts.map((receipt) => receipt?.id)
-        
-        const responseGetParticipant = await pb.collection('participants').getFullList({
-            filter: `receiptId="${receipt}" && user ="${userId}"`
-        })
-
-        const firstUser = responseGetParticipant[0]?.user
-
-        if(userOwner == userId){
+        if(owner == userId){
             toast.error('Já sou dono desse recibo.')
-        }else if(firstUser == undefined){
+        }else if(AlredyParticipant){
+            toast.error('Já está participando deste recibo.')
+        }else{
             const data={
                 user: userId,
                 totalCost: 0,
-                receiptId: receipt
+                receiptId: receiptId
             }
-
             const responseParticipant = await pb.collection('participants').create(data)
+
             if(responseParticipant != null){
+                const currentParticipants = participants || []
+                const updatedParticipants = [...currentParticipants, responseParticipant.id]
+                const dataReceipt={
+                    participants: updatedParticipants
+                }
+                await pb.collection('receipts').update(`${receiptId}`, dataReceipt)
                 toast.success('Entrada no recibo feita com sucesso!')
-                navigate(`/receiptDetails/${receipt}`)
+                navigate(`/receiptDetails/${receiptId}`)
             }else{
                 toast.error('Erro ao entrar no recibo, tente novamente.')
             }
 
-        }else if(userId == firstUser){
-            toast.error('já é participante desse recibo.')
         }
     }
 
