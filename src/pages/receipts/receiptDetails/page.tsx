@@ -42,7 +42,7 @@ export default function ReceiptDetails(){
 
     async function responseGetOneReceipt(){
         const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
-            expand: 'user, participants, costs'
+            expand: 'user, participants, historics'
         })
 
         if(response.participants != null){
@@ -55,16 +55,12 @@ export default function ReceiptDetails(){
             setParticipant(null)
         }
 
-        if (response.expand?.costs && Array.isArray(response.expand?.costs)) {
-            const costsFrom = response.expand.costs
-                .map((cost) => ({
-                    ...cost,
-                    created: new Date(cost.created),
-                }))
-                .sort((a, b) => a.created.getTime() - b.created.getTime())
-            setHistorics(costsFrom)
+        console.log(response.expand?.historics)
 
-            const totalCost = costsFrom.reduce((sum, item) => {
+        if (response.expand?.historics != null) {
+            setHistorics(response.expand?.historics)
+
+            const totalCost = historics?.reduce((sum, item) => {
                 return sum + parseFloat(item.cost || 0)
             }, 0)
             setValueTotal(totalCost)
@@ -87,8 +83,6 @@ export default function ReceiptDetails(){
             toast.error('Sem histótico.')
         }
     }
-
-    console.log('Page details', historics)
 
     const now = new Date()
     const currentDate = format(now, 'yyyy-MM-dd')

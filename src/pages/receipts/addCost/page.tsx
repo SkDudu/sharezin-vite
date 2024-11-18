@@ -21,15 +21,13 @@ export default function AddCostToReceipt(){
     const [nameProductField, setNameProduct] = useState('')
     const [valueProductField, setValueProduct] = useState('')
 
-    console.log('page addCost', data.historics)
-
     async function actionAddCostInReceitp() {
         try {
             const dataToCost = {
                 name: nameProductField,
                 cost: valueProductField.includes('.') ? valueProductField : valueProductField.replace(',', '.'),
                 receiptId: receiptId,
-                userId: userId
+                participantId: data.participantId
             }
     
             const costValue = parseFloat(valueProductField.replace(',', '.'))
@@ -45,39 +43,20 @@ export default function AddCostToReceipt(){
                 totalCost: sum
             }
 
-            if(data.historics == null){
-                const response = await pb.collection('costs').create(dataToCost)
-                const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
+            const response = await pb.collection('costs').create(dataToCost)
+            const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
+            const dataHistoric = {
+                historics: [
+                    response.id
+                ],
+            }
+            await pb.collection('receipts').update(`${data.receiptId}`, dataHistoric)
 
-                const dataHistoric = {
-                    costs: response.id
-                }
-                const responseHistoricInReceipt = await pb.collection('receipts').update(`${receiptId}`, dataHistoric)
-
-                if (response != null && responseSumTotal != null && responseHistoricInReceipt != null) {
-                    toast.success('Valor adicionado com sucesso.')
-                    navigate(`/receiptDetails/${data.receiptId}`)
-                } else {
-                    toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
-                }
-            }else{
-                const response = await pb.collection('costs').create(dataToCost)
-
-                const currentHistorics = data.historics
-                const updatedHistorics=[...currentHistorics, response.id]
-                const dataHistoric = {
-                    costs: updatedHistorics
-                }
-                const responseHistoricInReceipt = await pb.collection('receipts').update(`${receiptId}`, dataHistoric)
-
-                const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
-
-                if (response != null && responseSumTotal != null && responseHistoricInReceipt != null) {
-                    toast.success('Valor adicionado com sucesso.')
-                    navigate(`/receiptDetails/${data.receiptId}`)
-                } else {
-                    toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
-                }
+            if (response != null && responseSumTotal != null) {
+                toast.success('Valor adicionado com sucesso.')
+                navigate(`/receiptDetails/${data.receiptId}`)
+            } else {
+                toast.error('Erro ao adicionar o valor a esse recibo, tente novamente.')
             }
         } catch (error) {
             console.error('Error adding cost:', error)
