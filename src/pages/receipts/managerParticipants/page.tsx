@@ -19,14 +19,12 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog.tsx";
-import {format} from "date-fns";
+import {format} from "date-fns"
 
 export default function manageParticipants(){
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {receiptIdParams} = useParams<{ receiptIdParams: string }>()
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [participants, setParticipants] = useState<RecordModel[] | null>(null)
     const [loading, setLoading] = useState(true)
     const [participantId, setParticipantId] = useState()
@@ -65,7 +63,6 @@ export default function manageParticipants(){
         }
     }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(()=>{
         getParticipantsByReceiptId()
     },[receiptIdParams])
