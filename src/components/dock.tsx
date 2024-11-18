@@ -15,6 +15,10 @@ export default function dock(props: DockProps){
         navigate('/home')
     }
 
+    function toMyReceipts(){
+        navigate('/myreceipts')
+    }
+
     function createReceipt(){
         navigate('/createReceipt')
     }
@@ -38,12 +42,12 @@ export default function dock(props: DockProps){
                     }
                 </DockIcon>
                 <DockIcon>
-                    {props.screen == "inviteReceipts" ?
-                        <Button onClick={()=>{}} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
+                    {props.screen == "MyReceipts" ?
+                        <Button onClick={toMyReceipts} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
                             <Receipt size={22} color='#fff'/>
                         </Button>
                         :
-                        <Button onClick={()=>{}} variant={"default"} className="bg-white hover:bg-white">
+                        <Button onClick={toMyReceipts} variant={"default"} className="bg-white hover:bg-white">
                             <Receipt size={22} color='#oboc10'/>
                         </Button>
                     }

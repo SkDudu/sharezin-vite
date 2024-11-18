@@ -47,8 +47,16 @@ export default function createReceitp(){
                     totalCost: 0,
                     receiptId: response.id
                 }
-
-                await pb.collection('participants').create(data)
+                const responseParticipant = await pb.collection('participants').create(data)
+                console.log(responseParticipant)
+                if(responseParticipant != null){
+                    const dataParticipant = {
+                        participants: [
+                            responseParticipant.id
+                        ],
+                    }
+                    await pb.collection('receipts').update(`${response.id}`, dataParticipant)
+                }
                 toast.success('Recibo criado com sucesso.')
                 navigate('/home')
             }
