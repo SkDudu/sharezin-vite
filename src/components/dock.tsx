@@ -1,6 +1,6 @@
 import {Dock, DockIcon} from "@/components/ui/dock.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {House, Plus, Receipt, User} from "@phosphor-icons/react";
+import {Calendar, House, Plus, Receipt, User} from "@phosphor-icons/react";
 import {useNavigate} from "react-router-dom";
 
 interface DockProps{
@@ -25,6 +25,10 @@ export default function dock(props: DockProps){
 
     function toProfile(){
         navigate('/profile')
+    }
+
+    function toCalendar(){
+        navigate('/mycalendar')
     }
 
     return (
@@ -58,13 +62,13 @@ export default function dock(props: DockProps){
                     </Button>
                 </DockIcon>
                 <DockIcon>
-                    {props.screen == "inviteReceipts" ?
-                        <Button onClick={()=>{}} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
-                            <House size={22} color='#fff'/>
+                    {props.screen == "myCalendar" ?
+                        <Button onClick={toCalendar} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
+                            <Calendar size={22} color='#fff'/>
                         </Button>
                         :
-                        <Button onClick={()=>{}} variant={"default"} className="bg-white hover:bg-white">
-                            <House size={22} color='#oboc10'/>
+                        <Button onClick={toCalendar} variant={"default"} className="bg-white hover:bg-white">
+                            <Calendar size={22} color='#oboc10'/>
                         </Button>
                     }
                 </DockIcon>

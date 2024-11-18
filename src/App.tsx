@@ -5,6 +5,7 @@ import SignUp from './pages/auth/signUp/page'
 import ForgotPass from './pages/auth/forgotPass/page'
 import Home from './pages/home/page'
 import MyReceipts from './pages/receipts/page.tsx'
+import MyCalendar from './pages/calendar/page.tsx'
 import Profile from './pages/profile/page.tsx'
 import CreateReceitp from './pages/receipts/createReceipts/page'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
@@ -42,6 +43,11 @@ const router = createBrowserRouter([
   {
     path: '/myreceipts',
     element: <MyReceipts />,
+    errorElement: <Error />
+  },
+  {
+    path: '/mycalendar',
+    element: <MyCalendar />,
     errorElement: <Error />
   },
   {

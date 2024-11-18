@@ -195,7 +195,7 @@ export default function ReceiptDetails(){
 
     return(
         <>
-            <HeaderWithBack path={'/home'} title={'Detalhes do recibo'} />
+            <HeaderWithBack path={'/myreceipts'} title={'Detalhes do recibo'} />
             <div className="flex flex-col pt-4 pl-4 pr-4 gap-4">
                 <div className="flex flex-col w-full h-min bg-blue-100 p-2 rounded-lg gap-4">
                     <div className="flex flex-row items-center justify-between">
