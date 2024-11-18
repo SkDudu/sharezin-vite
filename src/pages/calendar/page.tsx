@@ -27,7 +27,7 @@ export default function MyCalendar() {
             <div className={"pt-3"}>
                 <p className={"p-2 font-medium text-xl"}>Atividades</p>
                 <Card>
-                    <p className={"p-2 text-gray-500"}>Você não tem nada marcado para hoje.</p>
+                    <p className={"p-2 text-xs text-gray-500"}>Você não tem nada marcado para hoje.</p>
                 </Card>
             </div>
             <Dock screen={"myCalendar"}/>
