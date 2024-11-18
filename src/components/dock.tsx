@@ -1,7 +1,17 @@
-import {Dock, DockIcon} from "@/components/ui/dock.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Calendar, House, Plus, Receipt, User} from "@phosphor-icons/react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom"
+import {Dock, DockIcon} from "@/components/ui/dock.tsx"
+import {Button} from "@/components/ui/button.tsx"
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
+import {Calendar, House, IdentificationCard, Plus, Receipt, User} from "@phosphor-icons/react"
 
 interface DockProps{
     screen: string,
@@ -57,9 +67,31 @@ export default function dock(props: DockProps){
                     }
                 </DockIcon>
                 <DockIcon>
-                    <Button onClick={createReceipt} className="bg-blue-100 w-10 h-10 p-2 hover:bg-blue-400">
-                        <Plus size={64} color="#1e3a8a"/>
-                    </Button>
+                    <div className={"mt-5"}>
+                        <Drawer>
+                            <DrawerTrigger>
+                                <Button className="bg-blue-100 w-10 h-10 p-2 hover:bg-blue-400">
+                                    <Plus size={64} color="#1e3a8a"/>
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                                <DrawerHeader className={"justify-items-start"}>
+                                    <DrawerTitle>Criar</DrawerTitle>
+                                    <DrawerDescription className={"text-start"}>Escolha entre as opções de criar um recibo e criar um evento.</DrawerDescription>
+                                </DrawerHeader>
+                                <DrawerFooter className={"mb-8"}>
+                                    <Button onClick={createReceipt} className={"bg-slate-50 hover:bg-slate-50 text-black font-normal w-full justify-start gap-2"}>
+                                        <Receipt size={22} weight={"regular"} color={"#172554"}/>
+                                        Criar um recibo
+                                    </Button>
+                                    <Button className={"bg-slate-50 hover:bg-slate-50 text-black font-normal w-full justify-start gap-2"}>
+                                        <Calendar size={22} weight={"regular"} color={"#172554"}/>
+                                        Criar um evento
+                                    </Button>
+                                </DrawerFooter>
+                            </DrawerContent>
+                        </Drawer>
+                    </div>
                 </DockIcon>
                 <DockIcon>
                     {props.screen == "myCalendar" ?
