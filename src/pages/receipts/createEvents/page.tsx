@@ -1,4 +1,5 @@
-import { useState } from "react"
+import React from "react"
+import {useState} from "react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast'
 import PocketBase from 'pocketbase'
@@ -8,11 +9,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+    Drawer, DrawerClose,
+    DrawerContent,
+    DrawerDescription, DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger
+} from "@/components/ui/drawer.tsx"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {Calendar} from "@/components/ui/calendar.tsx"
+import {LoadingButton} from "@/components/button.tsx"
 
 import generateRandomCode from "@/lib/randomCodeGenerator"
-import {LoadingButton} from "@/components/button.tsx";
+import { addDays, format } from "date-fns"
 
-export default function createReceitp(){
+export default function createEvents(){
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const navigate = useNavigate()
 
@@ -25,7 +43,9 @@ export default function createReceitp(){
     const [restaurantField, setRestaurantField] = useState('')
     const [coverField, setCoverField] = useState<number>(0)
     const [serviceField, setServiceField] = useState<number>(0)
-    const [loading, setLoading] = useState((false))
+    const [date, setDate] = React.useState<Date>()
+    const [loading, setLoading] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const title = titleField
     const description = descriptionField
@@ -34,12 +54,13 @@ export default function createReceitp(){
     const tax_service = serviceField
     const code_invitation: string = generateRandomCode(8)
     const user = userId as string
+    const eventTo = date
 
     const dataReceipt = {
-        title, description, place, tax_cover, tax_service, code_invitation, user
+        title, description, place, tax_cover, tax_service, code_invitation, user, eventTo
     }
 
-    async function actionCreateReceitp(){
+    async function actionCreateEvent(){
         if (!titleField || !descriptionField || !restaurantField || coverField === 0 || serviceField === 0) {
             toast.error('Por favor, preencha todos os campos obrigatórios.')
             return
@@ -57,7 +78,6 @@ export default function createReceitp(){
                     receiptId: response.id
                 }
                 const responseParticipant = await pb.collection('participants').create(data)
-                console.log(responseParticipant)
                 if(responseParticipant != null){
                     const dataParticipant = {
                         participants: [
@@ -73,6 +93,14 @@ export default function createReceitp(){
             toast.error('Erro ao criar esse recibo, tente novamente.')
             console.log(error)
         }
+    }
+
+    function selectDate(){
+        setOpen(false)
+    }
+
+    function selectDateSelect(){
+        setOpenSelect(false)
     }
 
     function handleTitleChange(event: any) {
@@ -107,11 +135,13 @@ export default function createReceitp(){
         }
     }
 
+    // @ts-ignore
     return(
         <div className="gap-2">
-            <HeaderWithBack path={"/home"} title={'Criar recibo'}/>
+            <HeaderWithBack path={"/home"} title={'Criar evento'}/>
             <div className="flex flex-col p-4 gap-4">
-                <p className="font-normal text-base">Para criar o recibo compartilhado, insira as informações abaixo.</p>
+                <p className="font-normal text-base">Para criar um evento compartilhado, insira as informações
+                    abaixo.</p>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="title">Título</Label>
                     <Input type="text" value={titleField} onChange={handleTitleChange}/>
@@ -134,21 +164,66 @@ export default function createReceitp(){
                     <Input type="text" value={coverField} onChange={handlecoverChange}
                     />
                 </div>
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="cover">Data do evento</Label>
+                    <Drawer open={open} onOpenChange={setOpen}>
+                        <DrawerTrigger>
+                            <Button variant={"outline"} className={'w-full justify-start gap-2'}>
+                                {date ? format(date, "PPP") : <span>Selecione</span>}
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                            <DrawerHeader className={"justify-items-start"}>
+                                <DrawerTitle>Data do evento</DrawerTitle>
+                                <DrawerDescription className={"text-start"}>Escolha a data do evento abaixo.</DrawerDescription>
+                            </DrawerHeader>
+                            <DrawerFooter className={"mb-8"}>
+                                <Select
+                                    onValueChange={(value) =>
+                                        setDate(addDays(new Date(), parseInt(value)))
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper">
+                                        <SelectItem value="0">Hoje</SelectItem>
+                                        <SelectItem value="1">Amanhã</SelectItem>
+                                        <SelectItem value="3">Em 3 dias</SelectItem>
+                                        <SelectItem value="7">Em 1 semana</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    className="rounded-md border"
+                                />
+                                <DrawerClose>
+                                    <Button className={"w-full mt-2"}>
+                                        Confirmar data
+                                    </Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
+                </div>
                 <div className="flex flex-col gap-2">
-                    <Dialog >
+                    <Dialog>
                         <DialogTrigger>
                             <Button variant={"default"} className="w-full bg-blue-950">Criar</Button>
                         </DialogTrigger>
                         <DialogContent className="w-[70%] rounded">
                             <DialogHeader>
-                            <DialogTitle className="flex justify-start">Criando recibo</DialogTitle>
-                            <DialogDescription className="text-start">
-                                Você deseja criar esse recibo? Depois você pode adicionar participantes no recibo.
-                            </DialogDescription>
+                                <DialogTitle className="flex justify-start">Criando evento</DialogTitle>
+                                <DialogDescription className="text-start">
+                                    Você deseja criar esse evento? Depois você pode adicionar participantes no recibo.
+                                </DialogDescription>
                             </DialogHeader>
                             <div className="flex flex-row gap-2 w-full justify-between">
                                 <Button variant={"secondary"} className="w-full">Não</Button>
-                                <LoadingButton onClick={actionCreateReceitp} variant={"default"} loading={loading} className="w-full">
+                                <LoadingButton onClick={actionCreateEvent} variant={"default"} loading={loading}
+                                               className="w-full">
                                     Criar
                                 </LoadingButton>
                             </div>

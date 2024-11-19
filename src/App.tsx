@@ -8,6 +8,7 @@ import MyReceipts from './pages/receipts/page.tsx'
 import MyCalendar from './pages/calendar/page.tsx'
 import Profile from './pages/profile/page.tsx'
 import CreateReceitp from './pages/receipts/createReceipts/page'
+import CreateEvents from './pages/receipts/createEvents/page.tsx'
 import ReceitpDetails from './pages/receipts/receiptDetails/page'
 import ManagerPaticipants from './pages/receipts/managerParticipants/page.tsx'
 import AddCost from './pages/receipts/addCost/page'
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
   {
     path: '/createReceipt',
     element: <CreateReceitp />,
+    errorElement: <Error />
+  },
+  {
+    path: '/createEvents',
+    element: <CreateEvents />,
     errorElement: <Error />
   },
   {
