@@ -1,5 +1,5 @@
 import React from "react"
-import PocketBase, { ListResult, RecordModel } from 'pocketbase'
+import PocketBase from 'pocketbase'
 
 import Header from "@/components/header"
 import Dock from "@/components/dock.tsx"

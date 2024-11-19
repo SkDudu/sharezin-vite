@@ -41,12 +41,18 @@ export default function ReceiptDetails(){
     const [isClosedParticipant, setIsClosedParticipant] = useState(false)
 
     async function responseGetOneReceipt(){
-        const response = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
+        const responseReceipt = await pb.collection('receipts').getOne(`${receiptIdParams}`, {
             expand: 'user, participants, historics'
         })
 
-        if(response.participants != null){
-            const matchingParticipant = response.expand?.participants.find(
+        if(responseReceipt != null){
+            setReceipt(responseReceipt)
+        }else{
+            toast.error('Esse recibo não existe.')
+        }
+
+        if(responseReceipt.participants != null){
+            const matchingParticipant = responseReceipt.expand?.participants.find(
                 (participant) => participant.user === userId
             )
             setParticipant(matchingParticipant)
@@ -55,34 +61,29 @@ export default function ReceiptDetails(){
             setParticipant(null)
         }
 
-        console.log(response.expand?.historics)
-
-        if (response.expand?.historics != null) {
-            setHistorics(response.expand?.historics)
-
-            const totalCost = historics?.reduce((sum, item) => {
+        if(responseReceipt.historics != null) {
+            setHistorics(responseReceipt?.expand?.historics)
+            const totalCost = responseReceipt?.expand?.historics?.reduce((sum, item) => {
                 return sum + parseFloat(item.cost || 0)
             }, 0)
             setValueTotal(totalCost)
+            console.log(totalCost)
         } else {
             setHistorics(null)
         }
 
-        if(response != null){
-            setReceipt(response)
-        }else{
-            toast.error('Esse recibo não existe.')
-        }
-
-        if(response != null){
+        if(responseReceipt != null){
             setLoading(false)
-            if(response.user == userId){
+            if(responseReceipt.user == userId){
                 setCancelReceipt(true)
             }
         }else{
             toast.error('Sem histótico.')
         }
     }
+
+    const myValue = participant?.totalCost + ((receipt?.tax_service / 100) * participant?.totalCost) + receipt?.tax_cover
+    const myValueReceipt = valueTotal + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
 
     const now = new Date()
     const currentDate = format(now, 'yyyy-MM-dd')
@@ -104,9 +105,6 @@ export default function ReceiptDetails(){
             toast.error('Erro ao tentar fechar o seu recibo, tente novamente.')
         }
     }
-
-    const myValue = participant?.totalCost + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
-    const myValueReceipt = valueTotal + ((receipt?.tax_service / 100) * valueTotal) + receipt?.tax_cover
 
     async function closedMyRecipt(){
         const data={
