@@ -7,12 +7,13 @@ import HeaderWithBack from "@/components/headerWithBack"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {LoadingButton} from "@/components/button.tsx";
 
 export default function AddCostToReceipt(){
     const location = useLocation()
     const { data } = location.state || {}
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
-    const userId = JSON.parse(localStorage.getItem("userId") as string)
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -21,7 +22,10 @@ export default function AddCostToReceipt(){
     const [nameProductField, setNameProduct] = useState('')
     const [valueProductField, setValueProduct] = useState('')
 
+    console.log(data.historics)
+
     async function actionAddCostInReceitp() {
+        setLoading(true)
         try {
             const dataToCost = {
                 name: nameProductField,
@@ -45,8 +49,10 @@ export default function AddCostToReceipt(){
 
             const response = await pb.collection('costs').create(dataToCost)
             const responseSumTotal = await pb.collection('participants').update(`${data.participantId}`, dataToParticipant)
+            const currentCosts = data.historics
             const dataHistoric = {
                 historics: [
+                    ...currentCosts,
                     response.id
                 ],
             }
@@ -101,7 +107,9 @@ export default function AddCostToReceipt(){
                 </div>
 
                 <div className="flex flex-col gap-3 pb-2">
-                    <Button variant={"default"} onClick={actionAddCostInReceitp} className="w-full">Adicionar custo</Button>
+                    <LoadingButton onClick={actionAddCostInReceitp} variant={"default"} loading={loading}>
+                        Adicionar custo
+                    </LoadingButton>
                     <Link to={`/receiptDetails/${data.receiptId}`}>
                         <Button variant={"secondary"} className="w-full">Cancelar</Button>
                     </Link>
