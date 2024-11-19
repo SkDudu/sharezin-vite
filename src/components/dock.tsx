@@ -33,6 +33,10 @@ export default function dock(props: DockProps){
         navigate('/createReceipt')
     }
 
+    function createEvents(){
+        navigate('/createEvents')
+    }
+
     function toProfile(){
         navigate('/profile')
     }
@@ -84,7 +88,7 @@ export default function dock(props: DockProps){
                                         <Receipt size={22} weight={"regular"} color={"#172554"}/>
                                         Criar um recibo
                                     </Button>
-                                    <Button className={"bg-slate-50 hover:bg-slate-50 text-black font-normal w-full justify-start gap-2"}>
+                                    <Button onClick={createEvents} className={"bg-slate-50 hover:bg-slate-50 text-black font-normal w-full justify-start gap-2"}>
                                         <Calendar size={22} weight={"regular"} color={"#172554"}/>
                                         Criar um evento
                                     </Button>
