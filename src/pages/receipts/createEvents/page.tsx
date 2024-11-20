@@ -61,7 +61,7 @@ export default function createEvents(){
     }
 
     async function actionCreateEvent(){
-        if (!titleField || !descriptionField || !restaurantField || coverField === 0 || serviceField === 0) {
+        if (!titleField || !descriptionField || !restaurantField || !coverField || !serviceField) {
             toast.error('Por favor, preencha todos os campos obrigatórios.')
             return
         }
@@ -95,14 +95,6 @@ export default function createEvents(){
         }
     }
 
-    function selectDate(){
-        setOpen(false)
-    }
-
-    function selectDateSelect(){
-        setOpenSelect(false)
-    }
-
     function handleTitleChange(event: any) {
         const { value } = event.target;
         setTitleField(value);
@@ -120,18 +112,16 @@ export default function createEvents(){
 
 
     function handlecoverChange(event: any) {
-        const { value } = event.target;
+        const { value } = event.target
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
-            setCoverField(valuerNumber);
+            setCoverField(value ? parseFloat(value) : 0)
         }
     }
 
     function handleserviceChange(event: any) {
-        const { value } = event.target;
+        const { value } = event.target
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
-            setServiceField(valuerNumber);
+            setServiceField(value ? parseFloat(value) : 0)
         }
     }
 

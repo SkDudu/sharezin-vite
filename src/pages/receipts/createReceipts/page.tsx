@@ -23,9 +23,9 @@ export default function createReceitp(){
     const [titleField, setTitleField] = useState('')
     const [descriptionField, setDescriptionField] = useState('')
     const [restaurantField, setRestaurantField] = useState('')
-    const [coverField, setCoverField] = useState<number>(0)
-    const [serviceField, setServiceField] = useState<number>(0)
-    const [loading, setLoading] = useState((false))
+    const [coverField, setCoverField] = useState('')
+    const [serviceField, setServiceField] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const title = titleField
     const description = descriptionField
@@ -40,7 +40,7 @@ export default function createReceitp(){
     }
 
     async function actionCreateReceitp(){
-        if (!titleField || !descriptionField || !restaurantField || coverField === 0 || serviceField === 0) {
+        if (!titleField || !descriptionField || !restaurantField || !coverField || !serviceField) {
             toast.error('Por favor, preencha todos os campos obrigatórios.')
             return
         }
@@ -92,18 +92,16 @@ export default function createReceitp(){
 
 
     function handlecoverChange(event: any) {
-        const { value } = event.target;
+        const { value } = event.target
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
-            setCoverField(valuerNumber);
+            setCoverField(value ? parseFloat(value) : 0)
         }
     }
 
     function handleserviceChange(event: any) {
-        const { value } = event.target;
+        const { value } = event.target
         if (/^\d*\.?\d*$/.test(value)) {
-            const valuerNumber = parseFloat(value)
-            setServiceField(valuerNumber);
+            setServiceField(value ? parseFloat(value) : 0)
         }
     }
 
@@ -126,12 +124,22 @@ export default function createReceitp(){
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="service">Taxa de serviço</Label>
-                    <Input type="text" value={serviceField} onChange={handleserviceChange}
+                    <Input
+                        type="text"
+                        value={serviceField}
+                        onChange={handleserviceChange}
+                        inputMode="decimal"
+                        pattern="[0-9]*\.?[0-9]*"
                     />
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label htmlFor="cover">Cover</Label>
-                    <Input type="text" value={coverField} onChange={handlecoverChange}
+                    <Input
+                        type="text"
+                        value={coverField}
+                        onChange={handlecoverChange}
+                        inputMode="decimal"
+                        pattern="[0-9]*\.?[0-9]*"
                     />
                 </div>
                 <div className="flex flex-col gap-2">
