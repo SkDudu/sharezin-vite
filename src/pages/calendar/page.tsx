@@ -72,7 +72,7 @@ export default function MyCalendar() {
                             <Skeleton className="w-[250px] h-[10px] rounded-full"/>
                         </CardContent>
                     </Card>
-                ) : eventToday?.totalItems == 0 ? (
+                ) : eventToday?.totalItems == null ? (
                     <Card>
                         <p className={"p-2 text-xs text-gray-500"}>Você não tem nada marcado para hoje.</p>
                     </Card>
