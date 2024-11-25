@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react"
-import {getYear} from "date-fns"
-import PocketBase, {RecordModel} from 'pocketbase'
+import React, {useEffect, useState} from "react"
+import {getMonth, getYear, isSameDay, parseISO} from "date-fns"
+import PocketBase, {ListResult, RecordModel} from 'pocketbase'
+import toast from "react-hot-toast"
 
 import Header from "@/components/header"
 import Dock from "@/components/dock.tsx"
@@ -10,10 +11,10 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
+import {Skeleton} from "@/components/ui/skeleton.tsx"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import {Bank, MoneyWavy} from "@phosphor-icons/react"
-import toast from "react-hot-toast";
 
 export default function Home() {
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
@@ -23,39 +24,65 @@ export default function Home() {
 
     const currentDate = new Date()
     const year = getYear(currentDate)
+    const monthIndex = getMonth(currentDate); // Get the month index (0-11)
 
-    const [data, setData] = useState<RecordModel[] | null>(null)
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
+
+    const monthName = months[monthIndex]
+
+    const [data, setData] = useState<ListResult<RecordModel> | null>(null)
+    const [monthValue, setMonthValue] = useState()
+    const [loading, setLoading] = useState(true)
+
+    const [januaryValue, setJanuaryValue] = useState()
+    const [februaryValue, setFebruaryValue] = useState()
+    const [marchValue, setMarchValue] = useState()
+    const [aprilValue, setAprilValue] = useState()
+    const [mayValue, setMayValue] = useState()
+    const [juneValue, setJuneValue] = useState()
+    const [julyValue, setJulyValue] = useState()
+    const [augustValue, setAugustValue] = useState()
+    const [septemberValue, setSeptemberValue] = useState()
+    const [octoberValue, setOctoberValue] = useState()
+    const [novemberValue, setNovemberValue] = useState()
+    const [decemberValue, setDecemberValue] = useState()
 
     async function getDataToGraphics(){
-        try {
-            const record = await pb.collection('dataPerUser').getFirstListItem(`id="${userId}"`, {
-                filter: `year="${year}"`
-            })
+        const resultList = await pb.collection('dataPerUser').getList(1, 50, {
+            filter: `year >= "${year}" && id="${userId}"`,
+        })
 
-            if(record == null || record == undefined){
-                toast.error('Sem dados.')
-            }else{
-                setData(record)
-                console.log('data', data)
-            }
-        }catch{
+        if(resultList == null){
             toast.error('Sem dados.')
+        }else{
+            setData(resultList)
+
+            if(resultList){
+                const monthData = resultList.items[0]
+                const value = monthData[monthName]
+                setMonthValue(value)
+            }
+
+            setLoading(false)
         }
     }
 
     const chartData = [
-        { month: "Janeiro", cost: 13 },
-        { month: "Fevereiro", cost: 12 },
-        { month: "Março", cost: 12 },
-        { month: "Abril", cost: 12 },
-        { month: "Maio", cost: 12 },
-        { month: "Junho", cost: 12 },
-        { month: "Julho", cost: 12 },
-        { month: "Agosto", cost: 12 },
-        { month: "Setembro", cost: 12 },
-        { month: "outubro", cost: 12 },
-        { month: "Novembro", cost: 12 },
-        { month: "Dezembro", cost: 12 },
+        { month: "Janeiro", cost: januaryValue },
+        { month: "Fevereiro", cost: februaryValue },
+        { month: "Março", cost: marchValue },
+        { month: "Abril", cost: aprilValue },
+        { month: "Maio", cost: mayValue },
+        { month: "Junho", cost: juneValue },
+        { month: "Julho", cost: julyValue },
+        { month: "Agosto", cost: augustValue },
+        { month: "Setembro", cost: septemberValue },
+        { month: "outubro", cost: octoberValue },
+        { month: "Novembro", cost: novemberValue },
+        { month: "Dezembro", cost: decemberValue },
     ]
 
     const chartConfig = {
@@ -69,12 +96,42 @@ export default function Home() {
         getDataToGraphics()
     }, [userId])
 
+    useEffect(() => {
+        if (data) {
+            const monthData = data.items[0]
+            const januaryValue = parseFloat(monthData['January'])
+            const februaryValue = parseFloat(monthData['February'])
+            const marchValue = parseFloat(monthData['March'])
+            const aprilValue = parseFloat(monthData['April'])
+            const mayValue = parseFloat(monthData['May'])
+            const juneValue = parseFloat(monthData['June'])
+            const julyValue = parseFloat(monthData['July'])
+            const augustValue = parseFloat(monthData['August'])
+            const septemberValue = parseFloat(monthData['September'])
+            const octoberValue = parseFloat(monthData['October'])
+            const novemberValue = parseFloat(monthData['November'])
+            const decemberValue = parseFloat(monthData['December'])
+            setJanuaryValue(januaryValue)
+            setFebruaryValue(februaryValue)
+            setMarchValue(marchValue)
+            setAprilValue(aprilValue)
+            setMayValue(mayValue)
+            setJuneValue(juneValue)
+            setJulyValue(julyValue)
+            setAugustValue(augustValue)
+            setSeptemberValue(septemberValue)
+            setOctoberValue(octoberValue)
+            setNovemberValue(novemberValue)
+            setDecemberValue(decemberValue)
+        }
+    }, [data])
+
     return (
         <div className="flex flex-col p-4 gap-2 w-screen h-screen">
             <Header name={username} isProfile={false}/>
 
             <div className={"w-full bg-gray-50 rounded"}>
-                <p className={"font-medium p-2"}>Gastos anuais</p>
+                <p className={"font-medium p-2"}>Gastos mensais</p>
                 <ChartContainer config={chartConfig}>
                     <BarChart accessibilityLayer data={chartData}>
                         <CartesianGrid vertical={false} horizontal={false} />
@@ -101,7 +158,12 @@ export default function Home() {
                     </div>
                     <div className={"flex flex-col"}>
                         <p className={"font-normal text-sm text-gray-600"}>Consumo mensal</p>
-                        <p className={"font-medium text-gray-800"}>asdasd</p>
+
+                        {loading ? (
+                            <Skeleton className="w-[60px] h-[20px] rounded-full"/>
+                        ) : (
+                            <p className={"font-medium text-gray-800"}>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(monthValue)}</p>
+                        )}
                     </div>
                 </div>
                 <div className={"flex flex-row w-full h-16 p-2 gap-2 bg-slate-50 rounded items-center"}>
@@ -110,7 +172,13 @@ export default function Home() {
                     </div>
                     <div className={"flex flex-col"}>
                         <p className={"font-normal text-sm text-gray-600"}>Consumo total</p>
-                        <p className={"font-medium text-gray-800"}>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(data?.costAnnually)}</p>
+                        <p className={"font-medium text-gray-800"}>
+                            {loading ? (
+                                <Skeleton className="w-[60px] h-[20px] rounded-full"/>
+                            ) : (
+                                <p>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(data?.items[0].costAnnually)}</p>
+                            )}
+                        </p>
                     </div>
                 </div>
             </div>
