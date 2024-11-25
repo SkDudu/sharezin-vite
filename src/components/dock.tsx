@@ -46,14 +46,14 @@ export default function dock(props: DockProps){
     }
 
     return (
-        <div className="absolute bottom-6 right-4 left-4">
+        <div className="fixed bottom-6 right-4 left-4">
             <Dock direction="middle" magnification={0} distance={0} className="gap-6 px-4">
                 <DockIcon>
                     {props.screen == "home" ?
                         <Button onClick={toHome} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
                             <House size={22} color='#fff'/>
                         </Button>
-                    :
+                        :
                         <Button onClick={toHome} variant={"default"} className="bg-white hover:bg-white">
                             <House size={22} color='#oboc10'/>
                         </Button>
@@ -113,7 +113,7 @@ export default function dock(props: DockProps){
                         <Button onClick={toProfile} variant={"default"} className="bg-blue-600 hover:bg-blue-600">
                             <User size={22} color='#fff'/>
                         </Button>
-                    :
+                        :
                         <Button onClick={toProfile} variant={"default"} className="bg-white hover:bg-white">
                             <User size={22} color='#oboc10'/>
                         </Button>
