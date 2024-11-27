@@ -16,6 +16,7 @@ import imgUrl from '../../assets/nodata.svg'
 export default function MyReceipts() {
     const [receipts, setReceipts] = useState<ListResult<RecordModel> | null>(null)
     const [closeReceipts, setCloseReceipts] = useState<ListResult<RecordModel> | null>(null)
+    const [receiptinvited, setReceiptinvited] = useState<RecordModel[]>([])
     const [loading, setLoading] = useState(true)
 
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
@@ -24,9 +25,16 @@ export default function MyReceipts() {
     const username = JSON.parse(localStorage.getItem("username") as string)
 
     async function responseGetAllReceipts(){
-        const receiptsOpen = await pb.collection('receipts').getList(1, 25, {
+        const receiptsOpen = await pb.collection('receipts').getList(1, 1, {
             filter: `user = "${userId}" && isClosed = false`
         })
+
+        const receiptInvited = await pb.collection('participants').getFirstListItem(`user="${userId}"`, {
+            expand: 'receipt',
+            filter: 'isClosed = false'
+        })
+
+        console.log("receiptInvited", receiptInvited)
 
         const receiptsClosed = await pb.collection('receipts').getList(1, 25, {
             filter: `user = "${userId}" && isClosed = true`
