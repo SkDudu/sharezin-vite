@@ -153,8 +153,8 @@ export default function Home() {
 
             <div className={"flex grid-rows-3 gap-2"}>
                 <div className={"flex flex-row w-full h-16 p-2 gap-2 bg-slate-50 rounded items-center"}>
-                    <div className={"flex w-10 h-10 rounded-full bg-blue-100 items-center justify-center"}>
-                        <MoneyWavy size={22} color={"#1e3a8a"}/>
+                    <div className={"flex w-8 h-8 rounded-full bg-blue-100 items-center justify-center"}>
+                        <MoneyWavy size={18} color={"#1e3a8a"}/>
                     </div>
                     <div className={"flex flex-col"}>
                         <p className={"font-normal text-sm text-gray-600"}>Consumo mensal</p>
@@ -167,8 +167,8 @@ export default function Home() {
                     </div>
                 </div>
                 <div className={"flex flex-row w-full h-16 p-2 gap-2 bg-slate-50 rounded items-center"}>
-                    <div className={"flex w-10 h-10 rounded-full bg-blue-100 items-center justify-center"}>
-                        <Bank size={22} color={"#1e3a8a"}/>
+                    <div className={"flex w-8 h-8 rounded-full bg-blue-100 items-center justify-center"}>
+                        <Bank size={18} color={"#1e3a8a"}/>
                     </div>
                     <div className={"flex flex-col"}>
                         <p className={"font-normal text-sm text-gray-600"}>Consumo total</p>
