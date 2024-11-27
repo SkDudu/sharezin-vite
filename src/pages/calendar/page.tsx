@@ -44,8 +44,6 @@ export default function MyCalendar() {
         }
     }
 
-    console.log(eventToday)
-
     useEffect(()=>{
         getEvents()
     }, [])
