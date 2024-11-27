@@ -24,7 +24,7 @@ export default function Home() {
 
     const currentDate = new Date()
     const year = getYear(currentDate)
-    const monthIndex = getMonth(currentDate); // Get the month index (0-11)
+    const monthIndex = getMonth(currentDate)
 
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -37,26 +37,29 @@ export default function Home() {
     const [monthValue, setMonthValue] = useState()
     const [loading, setLoading] = useState(true)
 
-    const [januaryValue, setJanuaryValue] = useState()
-    const [februaryValue, setFebruaryValue] = useState()
-    const [marchValue, setMarchValue] = useState()
-    const [aprilValue, setAprilValue] = useState()
-    const [mayValue, setMayValue] = useState()
-    const [juneValue, setJuneValue] = useState()
-    const [julyValue, setJulyValue] = useState()
-    const [augustValue, setAugustValue] = useState()
-    const [septemberValue, setSeptemberValue] = useState()
-    const [octoberValue, setOctoberValue] = useState()
-    const [novemberValue, setNovemberValue] = useState()
-    const [decemberValue, setDecemberValue] = useState()
+    const [januaryValue, setJanuaryValue] = useState(0)
+    const [februaryValue, setFebruaryValue] = useState(0)
+    const [marchValue, setMarchValue] = useState(0)
+    const [aprilValue, setAprilValue] = useState(0)
+    const [mayValue, setMayValue] = useState(0)
+    const [juneValue, setJuneValue] = useState(0)
+    const [julyValue, setJulyValue] = useState(0)
+    const [augustValue, setAugustValue] = useState(0)
+    const [septemberValue, setSeptemberValue] = useState(0)
+    const [octoberValue, setOctoberValue] = useState(0)
+    const [novemberValue, setNovemberValue] = useState(0)
+    const [decemberValue, setDecemberValue] = useState(0)
 
     async function getDataToGraphics(){
         const resultList = await pb.collection('dataPerUser').getList(1, 50, {
             filter: `year >= "${year}" && id="${userId}"`,
         })
 
-        if(resultList == null){
-            toast.error('Sem dados.')
+        if(resultList.items.length == 0){
+            toast('Sem gastos por enquanto.', {
+                icon: '👏',
+            })
+            setLoading(false)
         }else{
             setData(resultList)
 
@@ -159,11 +162,7 @@ export default function Home() {
                     <div className={"flex flex-col"}>
                         <p className={"font-normal text-sm text-gray-600"}>Consumo mensal</p>
 
-                        {loading ? (
-                            <Skeleton className="w-[60px] h-[20px] rounded-full"/>
-                        ) : (
-                            <p className={"font-medium text-gray-800"}>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(monthValue)}</p>
-                        )}
+                        {loading ? <Skeleton className="w-[60px] h-[20px] rounded-full bg-blue-100"/> : <p className={"font-medium text-gray-800"}>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(monthValue ?? 0)}</p>}
                     </div>
                 </div>
                 <div className={"flex flex-row w-full h-16 p-2 gap-2 bg-slate-50 rounded items-center"}>
@@ -174,9 +173,9 @@ export default function Home() {
                         <p className={"font-normal text-sm text-gray-600"}>Consumo total</p>
                         <p className={"font-medium text-gray-800"}>
                             {loading ? (
-                                <Skeleton className="w-[60px] h-[20px] rounded-full"/>
+                                <Skeleton className="w-[60px] h-[20px] rounded-full bg-blue-100"/>
                             ) : (
-                                <p>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(data?.items[0].costAnnually)}</p>
+                                <p>{new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL',}).format(data?.items[0].costAnnually ?? 0)}</p>
                             )}
                         </p>
                     </div>
