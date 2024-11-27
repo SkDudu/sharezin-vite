@@ -18,6 +18,9 @@ export default function profile(){
     const navigate = useNavigate()
     const pb = new PocketBase(`${import.meta.env.VITE_API_URL}`)
 
+    const username = JSON.parse(localStorage.getItem("username") as string)
+    const useremail = JSON.parse(localStorage.getItem("useremail") as string)
+
     async function logoff(){
         pb.authStore.clear()
         localStorage.clear()
@@ -28,8 +31,8 @@ export default function profile(){
         <div className="flex flex-col p-4 gap-2 w-screen h-screen">
             <div className={"flex flex-col items-center w-full h-28 rounded bg-slate-50 py-4"}>
                 <img src="" alt="Foto de perfil"  />
-                <p className={"font-medium text-base"}>Meu nome</p>
-                <p className={"font-light text-xs text-slate-500"}>Meu email</p>
+                <p className={"font-medium text-base"}>{username}</p>
+                <p className={"font-light text-xs text-slate-500"}>{useremail}</p>
             </div>
             <div className={"flex flex-col gap-2 h-full"}>
                 <Button className={"bg-slate-50 hover:bg-slate-50 text-black font-normal w-full justify-start gap-2"}>
